@@ -1,17 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -23,9 +12,9 @@ export async function generateMetadata(): Promise<Metadata> {
     requestHeaders.get("x-forwarded-proto") ??
     (host.startsWith("localhost") ? "http" : "https");
   const origin = `${protocol}://${host}`;
-  const title = "田嘉林 Tian Jialin — Product Designer";
+  const title = "田佳林 Tian Jialin — Product Designer";
   const description =
-    "田嘉林的个人作品集，聚焦品牌视觉、空间体验、产品渲染、AIGC 与三维设计。";
+    "田佳林的个人作品集，聚焦品牌视觉、空间体验、产品渲染、AIGC 与三维设计。";
 
   return {
     metadataBase: new URL(origin),
@@ -40,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: `${origin}/og.png`,
           width: 1680,
           height: 945,
-          alt: "田嘉林产品设计作品集",
+          alt: "田佳林产品设计作品集",
         },
       ],
     },
@@ -60,9 +49,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&family=Instrument+Serif:ital@1&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>{children}</body>
     </html>
   );
 }
