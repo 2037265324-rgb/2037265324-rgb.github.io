@@ -652,13 +652,386 @@ function ProjectCard({
   );
 }
 
+const stormServices = [
+  ["01", "品牌系统", "从概念策略、视觉母题到完整品牌触点，建立清晰而有记忆点的视觉语言。"],
+  ["02", "三维建模", "使用 Rhino 与三维工具完成产品、空间和角色建模，让抽象创意变成可验证的真实形态。"],
+  ["03", "渲染表现", "通过材质、灯光与场景气氛，制作具有电影质感的产品和空间视觉。"],
+  ["04", "空间体验", "把品牌内容延展到快闪、展陈、互动装置与零售终端，形成完整现场体验。"],
+  ["05", "整合传播", "围绕营销节点组织主视觉、包装、内容与线下应用，让创意在不同媒介保持一致。"],
+];
+
+const stormMarqueeImages = [
+  "/work/guiyang-space.webp",
+  "/work/lays-basketball.webp",
+  "/work/pepsi-exterior.webp",
+  "/work/lays-festival-kv.webp",
+  "/work/guiyang-merch.webp",
+  "/work/lays-fifa.webp",
+  "/work/cultural-packaging.webp",
+  "/work/pepsi-blindbox.webp",
+  "/work/gatorade-retail.webp",
+  "/work/lays-popup.webp",
+  "/work/portfolio-brand-selection.webp",
+  "/work/portfolio-activation-selection.webp",
+  "/work/portfolio-packaging-selection.webp",
+  "/work/portfolio-sports-pure.webp",
+  "/ip/ip-purple.webp",
+  "/ip/ip-moodboard.webp",
+];
+
+function StormRainCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+    let lastRipple = 0;
+    let drops: Array<{ x: number; y: number; length: number; speed: number; alpha: number; width: number }> = [];
+    let ripples: Array<{ x: number; y: number; radius: number; alpha: number; speed: number }> = [];
+
+    const makeDrop = (randomY = false) => ({
+      x: Math.random() * (width + 180),
+      y: randomY ? Math.random() * height : -80 - Math.random() * 160,
+      length: 30 + Math.random() * 86,
+      speed: 16 + Math.random() * 22,
+      alpha: 0.16 + Math.random() * 0.42,
+      width: 0.55 + Math.random() * 1.15,
+    });
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drops = Array.from(
+        { length: Math.min(260, Math.max(130, Math.floor(width / 6))) },
+        () => makeDrop(true),
+      );
+    };
+
+    const draw = (time: number) => {
+      context.clearRect(0, 0, width, height);
+      context.lineCap = "round";
+
+      drops.forEach((drop, index) => {
+        context.lineWidth = drop.width;
+        context.strokeStyle = index % 19 === 0
+          ? `rgba(192, 211, 255, ${drop.alpha * 0.8})`
+          : `rgba(123, 166, 234, ${drop.alpha})`;
+        context.beginPath();
+        context.moveTo(drop.x, drop.y);
+        context.lineTo(drop.x - 15, drop.y + drop.length);
+        context.stroke();
+        drop.y += drop.speed;
+        drop.x -= 2.4;
+        if (drop.y > height + drop.length || drop.x < -120) Object.assign(drop, makeDrop());
+      });
+
+      if (time - lastRipple > 145) {
+        ripples.push({
+          x: Math.random() * width,
+          y: height * (0.58 + Math.random() * 0.38),
+          radius: 3,
+          alpha: 0.2 + Math.random() * 0.24,
+          speed: 1.35 + Math.random() * 1.3,
+        });
+        lastRipple = time;
+      }
+
+      ripples.forEach((ripple) => {
+        context.lineWidth = 0.8;
+        context.strokeStyle = `rgba(175, 205, 255, ${ripple.alpha})`;
+        context.beginPath();
+        context.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.3, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.beginPath();
+        context.ellipse(ripple.x, ripple.y, ripple.radius * 0.58, ripple.radius * 0.16, 0, 0, Math.PI * 2);
+        context.stroke();
+        ripple.radius += ripple.speed;
+        ripple.alpha -= 0.008;
+      });
+      ripples = ripples.filter((ripple) => ripple.alpha > 0 && ripple.radius < 130);
+      frame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    frame = window.requestAnimationFrame(draw);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas className="storm-rain-canvas" ref={canvasRef} aria-hidden="true" />;
+}
+
+function StormMarquee() {
+  const { scrollYProgress } = useScroll();
+  const rowOneX = useTransform(scrollYProgress, [0, 1], [-620, 220]);
+  const rowTwoX = useTransform(scrollYProgress, [0, 1], [120, -720]);
+  const firstRow = stormMarqueeImages.slice(0, 8);
+  const secondRow = stormMarqueeImages.slice(8);
+
+  const renderRow = (images: string[]) =>
+    [...images, ...images, ...images].map((src, index) => (
+      <figure className="storm-marquee-tile" key={`${src}-${index}`}>
+        <img src={src} alt="" loading="lazy" decoding="async" />
+      </figure>
+    ));
+
+  return (
+    <section className="storm-marquee" aria-label="作品动态图廊">
+      <motion.div className="storm-marquee-row" style={{ x: rowOneX }}>
+        {renderRow(firstRow)}
+      </motion.div>
+      <motion.div className="storm-marquee-row" style={{ x: rowTwoX }}>
+        {renderRow(secondRow)}
+      </motion.div>
+    </section>
+  );
+}
+
+function StormProjectCard({
+  project,
+  index,
+  total,
+  onOpen,
+}: {
+  project: (typeof featuredProjects)[number];
+  index: number;
+  total: number;
+  onOpen: (project: GalleryProject) => void;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: cardRef,
+    offset: ["start start", "end end"],
+  });
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 1 - (total - index - 1) * 0.026]);
+  const galleryProject = {
+    title: project.title,
+    type: project.subtitle,
+    images: project.images.map(([src]) => src),
+  };
+
+  return (
+    <div className="storm-project-slot" ref={cardRef}>
+      <motion.article
+        className="storm-project-card"
+        style={{ scale, top: `${88 + index * 18}px` }}
+      >
+        <div className="storm-project-head">
+          <span className="storm-project-number">{project.number}</span>
+          <div>
+            <p>{project.year} / SELECTED WORK</p>
+            <h3>{project.title}</h3>
+          </div>
+          <button type="button" onClick={() => onOpen(galleryProject)}>
+            查看项目 <ArrowRight size={16} />
+          </button>
+        </div>
+        <button
+          className="storm-project-images"
+          type="button"
+          onClick={() => onOpen(galleryProject)}
+          aria-label={`打开 ${project.title} 项目图片`}
+        >
+          <span className="storm-project-left">
+            {project.images.slice(0, 2).map(([src, alt]) => (
+              <img key={src} src={src} alt={alt} loading="lazy" decoding="async" />
+            ))}
+          </span>
+          <span className="storm-project-right">
+            <img
+              src={(project.images[2] ?? project.images[0])[0]}
+              alt={(project.images[2] ?? project.images[0])[1]}
+              loading="lazy"
+              decoding="async"
+            />
+          </span>
+        </button>
+      </motion.article>
+    </div>
+  );
+}
+
+function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void }) {
+  return (
+    <main className="storm-site">
+      <StormRainCanvas />
+      <section className="storm-hero" id="storm-top">
+        <nav className="storm-nav" aria-label="大雨版主导航">
+          <a href="#storm-about">关于我</a>
+          <a href="#storm-services">能力</a>
+          <a href="#storm-projects">项目</a>
+          <a href="#storm-contact">联系</a>
+          <a className="storm-back-link" href="./">返回原版</a>
+        </nav>
+        <motion.h1
+          initial={{ opacity: 0, y: 46 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, ease: easeOut }}
+        >
+          HI, I&apos;M JIALIN
+        </motion.h1>
+        <motion.div
+          className="storm-hero-portrait"
+          initial={{ opacity: 0, y: 40, scale: 0.96 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 1.15, delay: 0.34, ease: easeOut }}
+        >
+          <img src="/ip/ip-cover.webp" alt="田佳林的三维人物视觉形象" fetchPriority="high" />
+        </motion.div>
+        <div className="storm-hero-bottom">
+          <motion.p
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.42, duration: 0.8, ease: easeOut }}
+          >
+            一名专注于品牌、空间、产品与三维视觉的设计师，用强烈而难忘的画面构建真实体验。
+          </motion.p>
+          <motion.a
+            className="storm-contact-button"
+            href="#storm-contact"
+            initial={{ opacity: 0, y: 22 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.56, duration: 0.8, ease: easeOut }}
+          >
+            CONTACT ME <ArrowRight size={18} />
+          </motion.a>
+        </div>
+        <div className="storm-waterline" aria-hidden="true" />
+      </section>
+
+      <StormMarquee />
+
+      <section className="storm-about" id="storm-about">
+        <AccentArtwork src="/ip/ip-white-hood.webp" alt="白色连帽三维人物" className="storm-decor storm-decor-one" label="" />
+        <AccentArtwork src="/ip/ip-purple.webp" alt="紫色环境光三维人物" className="storm-decor storm-decor-two" label="" />
+        <AccentArtwork src="/ip/ip-blue.webp" alt="蓝色轮廓光三维人物" className="storm-decor storm-decor-three" label="" />
+        <AccentArtwork src="/ip/ip-closeup.webp" alt="三维人物面部细节" className="storm-decor storm-decor-four" label="" />
+        <motion.div
+          className="storm-about-copy"
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.9, ease: easeOut }}
+        >
+          <h2>ABOUT ME</h2>
+          <AnimatedParagraph text="我是田佳林，一名产品设计师。我关注品牌如何在真实世界里被看见、被触碰，也被记住。工作跨越品牌视觉、空间体验、产品渲染与整合营销，并用三维工具把抽象概念变成可讨论、可验证、可落地的真实方案。" />
+          <a className="storm-contact-button" href="#storm-contact">CONTACT ME <ArrowRight size={18} /></a>
+        </motion.div>
+      </section>
+
+      <section className="storm-services" id="storm-services">
+        <motion.h2
+          initial={{ opacity: 0, y: 46 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.85, ease: easeOut }}
+        >
+          SERVICES
+        </motion.h2>
+        <div className="storm-service-list">
+          {stormServices.map(([number, title, description], index) => (
+            <motion.article
+              key={number}
+              initial={{ opacity: 0, y: 34 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.72, delay: index * 0.07, ease: easeOut }}
+            >
+              <span>{number}</span>
+              <div><h3>{title}</h3><p>{description}</p></div>
+            </motion.article>
+          ))}
+        </div>
+      </section>
+
+      <section className="storm-projects" id="storm-projects">
+        <h2>PROJECTS</h2>
+        <div className="storm-project-stack">
+          {featuredProjects.map((project, index) => (
+            <StormProjectCard
+              key={project.number}
+              project={project}
+              index={index}
+              total={featuredProjects.length}
+              onOpen={onOpen}
+            />
+          ))}
+        </div>
+        <div className="storm-archive-heading">
+          <span>FULL ARCHIVE / {String(moreWorks.length).padStart(2, "0")}</span>
+          <h3>更多作品</h3>
+        </div>
+        <div className="storm-archive-grid">
+          {moreWorks.map((work, index) => (
+            <motion.button
+              type="button"
+              key={work.title}
+              onClick={() => onOpen(work)}
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ duration: 0.65, delay: (index % 3) * 0.07, ease: easeOut }}
+            >
+              <figure><img src={work.cover ?? work.images[0]} alt={work.title} loading="lazy" decoding="async" /></figure>
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <div><h4>{work.title}</h4><p>{work.type}</p></div>
+              <ArrowRight size={17} />
+            </motion.button>
+          ))}
+        </div>
+      </section>
+
+      <footer className="storm-footer" id="storm-contact">
+        <p>AVAILABLE FOR BRAND / SPACE / VISUAL COLLABORATION</p>
+        <h2>LET&apos;S MAKE<br /><span>SOMETHING</span><br />UNFORGETTABLE.</h2>
+        <a href="tel:+8613279403213">132 7940 3213 <ArrowRight /></a>
+        <div><span>田佳林 / PRODUCT DESIGNER</span><a href="#storm-top">BACK TO TOP ↑</a></div>
+      </footer>
+    </main>
+  );
+}
+
 export default function Home() {
   const [activeGallery, setActiveGallery] = useState<GalleryProject | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const [isStormVersion, setIsStormVersion] = useState(false);
+
+  useEffect(() => {
+    setIsStormVersion(new URLSearchParams(window.location.search).get("version") === "storm");
+  }, []);
 
   function openGallery(project: GalleryProject) {
     setActiveImageIndex(0);
     setActiveGallery(project);
+  }
+
+  if (isStormVersion) {
+    return (
+      <>
+        <StormPortfolio onOpen={openGallery} />
+        <GalleryModal
+          activeIndex={activeImageIndex}
+          onClose={() => setActiveGallery(null)}
+          onIndexChange={setActiveImageIndex}
+          project={activeGallery}
+        />
+      </>
+    );
   }
 
   return (
