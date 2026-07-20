@@ -2779,6 +2779,47 @@ footer::before {
   }
 }
 
+.storm-picture {
+  display: contents;
+}
+
+.storm-service-list article,
+.storm-project-slot,
+.storm-archive-grid > button {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 620px;
+}
+
+@media (max-width: 700px) {
+  .storm-project-card {
+    backdrop-filter: none;
+  }
+
+  .storm-rain-canvas {
+    opacity: 0.7;
+    filter: saturate(1.12) contrast(1.04);
+  }
+
+  .storm-site::after {
+    filter: none;
+  }
+
+  .storm-marquee-row .storm-marquee-tile:nth-child(n + 11) {
+    display: none;
+  }
+
+  .storm-decor-three,
+  .storm-decor-four {
+    display: none;
+  }
+
+  .storm-service-list article,
+  .storm-project-slot,
+  .storm-archive-grid > button {
+    contain-intrinsic-size: auto 480px;
+  }
+}
+
 /* 2026 cinematic portfolio system */
 :root {
   --black: #02040a;
