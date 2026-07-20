@@ -723,7 +723,9 @@ function StormRainCanvas() {
     let height = 0;
     let frame = 0;
     let lastRipple = 0;
+    let lastShockwave = 0;
     let ripples: Array<{ x: number; y: number; radius: number; alpha: number; speed: number; flatten: number }> = [];
+    let shockwaves: Array<{ x: number; y: number; radius: number; alpha: number; speed: number; flatten: number }> = [];
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -778,6 +780,19 @@ function StormRainCanvas() {
         lastRipple = time;
       }
 
+      if (time - lastShockwave > 1900) {
+        const y = height * (0.66 + Math.random() * 0.24);
+        shockwaves.push({
+          x: width * (0.24 + Math.random() * 0.52),
+          y,
+          radius: 12,
+          alpha: 0.72,
+          speed: 4.2 + Math.random() * 1.6,
+          flatten: 0.18 + ((y / height) - 0.58) * 0.26,
+        });
+        lastShockwave = time;
+      }
+
       ripples.forEach((ripple) => {
         context.save();
         context.globalCompositeOperation = "screen";
@@ -803,7 +818,39 @@ function StormRainCanvas() {
         ripple.alpha -= 0.012;
       });
 
+      shockwaves.forEach((wave) => {
+        context.save();
+        context.globalCompositeOperation = "screen";
+        context.shadowColor = `rgba(123, 159, 255, ${wave.alpha})`;
+        context.shadowBlur = 26;
+        const shockGradient = context.createLinearGradient(
+          wave.x - wave.radius,
+          wave.y,
+          wave.x + wave.radius,
+          wave.y,
+        );
+        shockGradient.addColorStop(0, "rgba(101, 86, 255, 0)");
+        shockGradient.addColorStop(0.34, `rgba(89, 145, 255, ${wave.alpha * 0.72})`);
+        shockGradient.addColorStop(0.52, `rgba(237, 242, 255, ${wave.alpha})`);
+        shockGradient.addColorStop(0.7, `rgba(229, 31, 121, ${wave.alpha * 0.62})`);
+        shockGradient.addColorStop(1, "rgba(229, 31, 121, 0)");
+        context.strokeStyle = shockGradient;
+        context.lineWidth = 2.4;
+        context.beginPath();
+        context.ellipse(wave.x, wave.y, wave.radius, wave.radius * wave.flatten, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.lineWidth = 0.75;
+        context.strokeStyle = `rgba(211, 226, 255, ${wave.alpha * 0.55})`;
+        context.beginPath();
+        context.ellipse(wave.x, wave.y, wave.radius * 0.82, wave.radius * wave.flatten * 0.78, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.restore();
+        wave.radius += wave.speed;
+        wave.alpha -= 0.0125;
+      });
+
       ripples = ripples.filter((ripple) => ripple.alpha > 0 && ripple.radius < 150);
+      shockwaves = shockwaves.filter((wave) => wave.alpha > 0 && wave.radius < Math.max(width, 520) * 0.7);
       frame = window.requestAnimationFrame(draw);
     };
 
@@ -920,12 +967,21 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
           <a className="storm-back-link" href="./">返回原版</a>
         </nav>
         <motion.h1
+          data-text="HI, I'M JIALIN"
           initial={{ opacity: 0, y: 46 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease: easeOut }}
         >
           HI, I&apos;M JIALIN
         </motion.h1>
+        <div className="storm-kinetic-type" aria-hidden="true">
+          <span>3D / BRAND / SPACE / EXPERIENCE</span>
+          <span>3D / BRAND / SPACE / EXPERIENCE</span>
+        </div>
+        <div className="storm-energy-orbit" aria-hidden="true">
+          <i /><i /><i />
+        </div>
+        <div className="storm-light-strike" aria-hidden="true" />
         <motion.div
           className="storm-hero-portrait"
           initial={{ opacity: 0, y: 40, scale: 0.96 }}
@@ -956,6 +1012,22 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
       </section>
 
       <StormMarquee />
+
+      <section className="storm-impact-statement" aria-label="设计宣言">
+        <div className="storm-impact-visual" aria-hidden="true">
+          <StormImage src="/ip/ip-moodboard.webp" alt="" />
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 70, scale: 0.94 }}
+          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 1, ease: easeOut }}
+        >
+          <p>IDEAS SHOULD NOT STAY FLAT</p>
+          <h2>MAKE<br /><span>IT</span> REAL.</h2>
+        </motion.div>
+        <span className="storm-impact-index">TIAN JIALIN © 2026 / 3D CREATOR</span>
+      </section>
 
       <section className="storm-about" id="storm-about">
         <AccentArtwork src="/mobile/ip/ip-white-hood.webp" alt="白色连帽三维人物" className="storm-decor storm-decor-one" label="" />

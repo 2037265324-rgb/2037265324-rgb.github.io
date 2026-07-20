@@ -2724,6 +2724,368 @@ footer::before {
   object-fit: contain;
 }
 
+/* High-impact motion layer for the independent water edition. */
+.storm-hero > h1::before,
+.storm-hero > h1::after {
+  position: absolute;
+  inset: 0;
+  content: attr(data-text);
+  pointer-events: none;
+}
+
+.storm-hero > h1::before {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(98, 168, 255, 0.74);
+  filter: drop-shadow(0 0 16px rgba(72, 132, 255, 0.5));
+  clip-path: inset(0 0 54% 0);
+  animation: stormTypeShiftTop 3.8s steps(1, end) infinite;
+}
+
+.storm-hero > h1::after {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255, 40, 128, 0.48);
+  filter: drop-shadow(0 0 13px rgba(255, 26, 116, 0.34));
+  clip-path: inset(56% 0 0 0);
+  animation: stormTypeShiftBottom 4.6s steps(1, end) infinite;
+}
+
+@keyframes stormTypeShiftTop {
+  0%, 88%, 100% { transform: translate(0); opacity: 0; }
+  89% { transform: translate(-9px, -2px); opacity: 0.95; }
+  91% { transform: translate(7px, 1px); opacity: 0.45; }
+  93% { transform: translate(-3px); opacity: 0.8; }
+}
+
+@keyframes stormTypeShiftBottom {
+  0%, 78%, 100% { transform: translate(0); opacity: 0; }
+  79% { transform: translate(8px, 2px); opacity: 0.85; }
+  82% { transform: translate(-6px, -1px); opacity: 0.4; }
+  84% { transform: translate(2px); opacity: 0.7; }
+}
+
+.storm-kinetic-type {
+  position: absolute;
+  z-index: 3;
+  top: 40%;
+  left: -18%;
+  display: flex;
+  width: 136%;
+  overflow: hidden;
+  border-top: 1px solid rgba(177, 205, 245, 0.13);
+  border-bottom: 1px solid rgba(177, 205, 245, 0.1);
+  background: rgba(8, 11, 18, 0.38);
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(179, 202, 236, 0.17);
+  font-size: clamp(52px, 8vw, 132px);
+  font-weight: 900;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  transform: rotate(-6deg);
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.storm-kinetic-type span {
+  flex: 0 0 auto;
+  padding-right: 0.42em;
+  animation: kineticTypeRun 16s linear infinite;
+}
+
+@keyframes kineticTypeRun {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+
+.storm-energy-orbit {
+  position: absolute;
+  z-index: 5;
+  bottom: 3%;
+  left: 50%;
+  width: min(48vw, 720px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  transform: translateX(-50%) perspective(700px) rotateX(68deg);
+  pointer-events: none;
+}
+
+.storm-energy-orbit i {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(122, 173, 255, 0.22);
+  border-right-color: rgba(246, 43, 129, 0.58);
+  border-left-color: rgba(91, 130, 255, 0.42);
+  border-radius: 50%;
+  box-shadow: 0 0 24px rgba(84, 135, 232, 0.12);
+  animation: energyOrbit 7s linear infinite;
+}
+
+.storm-energy-orbit i:nth-child(1) { inset: 0; }
+.storm-energy-orbit i:nth-child(2) { inset: 9%; animation-direction: reverse; animation-duration: 9s; }
+.storm-energy-orbit i:nth-child(3) { inset: 18%; animation-duration: 5.5s; }
+
+@keyframes energyOrbit {
+  from { transform: rotate(0deg) scale(0.94); opacity: 0.35; }
+  50% { transform: rotate(180deg) scale(1.04); opacity: 0.9; }
+  to { transform: rotate(360deg) scale(0.94); opacity: 0.35; }
+}
+
+.storm-light-strike {
+  position: absolute;
+  z-index: 7;
+  top: -35%;
+  left: 50%;
+  width: 12%;
+  height: 175%;
+  background: linear-gradient(90deg, transparent, rgba(180, 210, 255, 0.18), rgba(255, 255, 255, 0.42), rgba(239, 41, 125, 0.16), transparent);
+  filter: blur(10px);
+  mix-blend-mode: screen;
+  transform: translateX(-50%) rotate(13deg);
+  animation: lightStrike 5.6s cubic-bezier(0.6, 0, 0.35, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes lightStrike {
+  0%, 14% { left: -20%; opacity: 0; }
+  22% { opacity: 0.9; }
+  38%, 100% { left: 115%; opacity: 0; }
+}
+
+.storm-hero-portrait img {
+  animation: stormPortraitPulse 5.2s ease-in-out infinite;
+}
+
+@keyframes stormPortraitPulse {
+  0%, 100% { filter: brightness(0.9) contrast(1.03) saturate(0.94); translate: 0 0; }
+  50% { filter: brightness(1.1) contrast(1.08) saturate(1.12); translate: 0 -10px; }
+}
+
+.storm-impact-statement {
+  position: relative;
+  z-index: 4;
+  display: grid;
+  min-height: 108svh;
+  padding: clamp(70px, 8vw, 124px) clamp(20px, 4vw, 64px);
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(100, 123, 192, 0.2), transparent 31%),
+    linear-gradient(125deg, #080910, #0d0b14 52%, #06090f);
+}
+
+.storm-impact-statement::before,
+.storm-impact-statement::after {
+  position: absolute;
+  z-index: 1;
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.storm-impact-statement::before {
+  width: min(75vw, 1050px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(133, 175, 246, 0.18);
+  box-shadow: inset 0 0 90px rgba(89, 132, 213, 0.09), 0 0 70px rgba(81, 123, 202, 0.1);
+  animation: impactHalo 5s ease-in-out infinite;
+}
+
+.storm-impact-statement::after {
+  width: min(50vw, 700px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(246, 45, 135, 0.2);
+  animation: impactHalo 5s 0.7s ease-in-out infinite reverse;
+}
+
+@keyframes impactHalo {
+  0%, 100% { transform: scale(0.84); opacity: 0.28; }
+  50% { transform: scale(1.08); opacity: 0.86; }
+}
+
+.storm-impact-visual {
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: min(48vw, 660px);
+  opacity: 0.22;
+  filter: saturate(0.7) contrast(1.2);
+  transform: translate(-50%, -50%) rotate(8deg) scale(1.12);
+}
+
+.storm-impact-visual img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.storm-impact-statement > div:nth-of-type(2) {
+  position: relative;
+  z-index: 4;
+  width: min(100%, 1450px);
+}
+
+.storm-impact-statement p {
+  margin: 0 0 20px 0.6vw;
+  color: rgba(207, 222, 244, 0.58);
+  font-size: clamp(9px, 1vw, 15px);
+  letter-spacing: 0.22em;
+}
+
+.storm-impact-statement h2 {
+  margin: 0;
+  color: #dce6f3;
+  font-size: clamp(100px, 16.8vw, 286px);
+  font-weight: 900;
+  line-height: 0.62;
+  letter-spacing: -0.09em;
+  text-align: center;
+  text-shadow: 0 22px 70px rgba(0, 0, 0, 0.72);
+}
+
+.storm-impact-statement h2 span {
+  color: transparent;
+  background: linear-gradient(95deg, #6179ff, #d8e9ff 48%, #ee257c 78%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 28px rgba(124, 143, 255, 0.28));
+}
+
+.storm-impact-index {
+  position: absolute;
+  z-index: 4;
+  right: 28px;
+  bottom: 24px;
+  color: rgba(200, 218, 244, 0.42);
+  font-size: 8px;
+  letter-spacing: 0.16em;
+}
+
+.storm-marquee-tile:nth-child(3n + 1) {
+  transform: translateY(-14px) rotate(-0.7deg);
+}
+
+.storm-marquee-tile:nth-child(3n + 2) {
+  transform: translateY(13px) rotate(0.6deg);
+}
+
+.storm-service-list article {
+  transition: padding 320ms ease, background-color 320ms ease;
+}
+
+.storm-service-list article:hover {
+  padding-right: 24px;
+  padding-left: 24px;
+  background: rgba(89, 108, 158, 0.06);
+}
+
+.storm-service-list article > span {
+  transition: color 260ms ease, transform 320ms ease;
+}
+
+.storm-service-list article:hover > span {
+  color: #7a43df;
+  transform: translateX(10px);
+}
+
+.storm-project-slot:nth-child(odd) .storm-project-card {
+  border-color: rgba(150, 189, 255, 0.92);
+  box-shadow: 0 40px 110px rgba(37, 65, 137, 0.35), inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.storm-project-slot:nth-child(even) .storm-project-card {
+  border-color: rgba(255, 82, 152, 0.74);
+  box-shadow: 0 40px 110px rgba(124, 25, 77, 0.28), inset 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.storm-project-card::before {
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  bottom: 0;
+  left: -22%;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  content: "";
+  opacity: 0;
+  transform: skewX(-18deg);
+  transition: left 750ms cubic-bezier(0.16, 1, 0.3, 1), opacity 200ms ease;
+  pointer-events: none;
+}
+
+.storm-project-card:hover::before {
+  left: 112%;
+  opacity: 1;
+}
+
+.storm-project-images img {
+  transition: transform 800ms cubic-bezier(0.16, 1, 0.3, 1), filter 500ms ease;
+}
+
+.storm-project-card:hover .storm-project-images img {
+  filter: brightness(1.08) saturate(1.08);
+  transform: scale(1.018);
+}
+
+@media (max-width: 700px) {
+  .storm-kinetic-type {
+    top: 35%;
+    font-size: 50px;
+    opacity: 0.52;
+    backdrop-filter: none;
+  }
+
+  .storm-energy-orbit {
+    bottom: 18%;
+    width: 86vw;
+  }
+
+  .storm-light-strike {
+    width: 20%;
+    filter: blur(7px);
+  }
+
+  .storm-impact-statement {
+    min-height: 84svh;
+  }
+
+  .storm-impact-statement h2 {
+    font-size: 25vw;
+    line-height: 0.68;
+  }
+
+  .storm-impact-visual {
+    width: 82vw;
+    opacity: 0.16;
+  }
+
+  .storm-impact-statement::before {
+    width: 115vw;
+  }
+
+  .storm-impact-statement::after {
+    width: 78vw;
+  }
+
+  .storm-project-card::before {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .storm-hero > h1::before,
+  .storm-hero > h1::after,
+  .storm-kinetic-type span,
+  .storm-energy-orbit i,
+  .storm-light-strike,
+  .storm-hero-portrait img,
+  .storm-impact-statement::before,
+  .storm-impact-statement::after {
+    animation: none;
+  }
+}
+
 /* C4D-style wet ground material for the independent storm edition. */
 .storm-site::after {
   position: fixed;
