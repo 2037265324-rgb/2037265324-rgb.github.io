@@ -679,6 +679,37 @@ const stormMarqueeImages = [
   "/ip/ip-moodboard.webp",
 ];
 
+function stormMobileSource(src: string) {
+  const parts = src.split("/").filter(Boolean);
+  if (parts[0] === "work" && parts.length === 2) return `/mobile/work/${parts[1]}`;
+  if (parts[0] === "ip" && parts.length === 2) return `/mobile/ip/${parts[1]}`;
+  if (src === "/hero-lays-union.webp") return "/mobile/hero-lays-union.webp";
+  return src;
+}
+
+function StormImage({
+  src,
+  alt,
+  eager = false,
+}: {
+  src: string;
+  alt: string;
+  eager?: boolean;
+}) {
+  return (
+    <picture className="storm-picture">
+      <source media="(max-width: 700px)" srcSet={stormMobileSource(src)} />
+      <img
+        src={src}
+        alt={alt}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        fetchPriority={eager ? "high" : "auto"}
+      />
+    </picture>
+  );
+}
+
 function StormRainCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -691,58 +722,8 @@ function StormRainCanvas() {
     let width = 0;
     let height = 0;
     let frame = 0;
-    let drops: Array<{
-      x: number;
-      y: number;
-      hitY: number;
-      length: number;
-      speed: number;
-      alpha: number;
-      width: number;
-      depth: number;
-    }> = [];
+    let lastRipple = 0;
     let ripples: Array<{ x: number; y: number; radius: number; alpha: number; speed: number; flatten: number }> = [];
-    let splashes: Array<{ x: number; y: number; age: number; life: number; size: number; alpha: number }> = [];
-
-    const makeDrop = (randomY = false) => {
-      const depth = 0.35 + Math.random() * 0.65;
-      const hitY = height * (0.56 + Math.random() * 0.43);
-      return {
-        x: Math.random() * (width + 220),
-        y: randomY ? Math.random() * hitY : -100 - Math.random() * 220,
-        hitY,
-        length: (28 + Math.random() * 76) * depth,
-        speed: (15 + Math.random() * 23) * depth,
-        alpha: (0.13 + Math.random() * 0.46) * depth,
-        width: 0.5 + depth * 1.25,
-        depth,
-      };
-    };
-
-    const createImpact = (x: number, y: number, depth: number) => {
-      if (Math.random() < 0.58) {
-        ripples.push({
-          x,
-          y,
-          radius: 2 + depth * 2,
-          alpha: 0.22 + depth * 0.34,
-          speed: 1.25 + depth * 1.65,
-          flatten: 0.15 + ((y / height) - 0.5) * 0.3,
-        });
-      }
-      if (Math.random() < 0.48) {
-        splashes.push({
-          x,
-          y,
-          age: 0,
-          life: 16 + Math.random() * 12,
-          size: 5 + depth * 13,
-          alpha: 0.3 + depth * 0.42,
-        });
-      }
-      if (ripples.length > 52) ripples.splice(0, ripples.length - 52);
-      if (splashes.length > 30) splashes.splice(0, splashes.length - 30);
-    };
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -753,10 +734,6 @@ function StormRainCanvas() {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
-      drops = Array.from(
-        { length: Math.min(260, Math.max(130, Math.floor(width / 6))) },
-        () => makeDrop(true),
-      );
     };
 
     const draw = (time: number) => {
@@ -788,24 +765,18 @@ function StormRainCanvas() {
       }
       context.restore();
 
-      drops.forEach((drop, index) => {
-        context.lineWidth = drop.width;
-        context.strokeStyle = index % 19 === 0
-          ? `rgba(192, 211, 255, ${drop.alpha * 0.8})`
-          : `rgba(123, 166, 234, ${drop.alpha})`;
-        context.beginPath();
-        context.moveTo(drop.x, drop.y);
-        context.lineTo(drop.x - 15, drop.y + drop.length);
-        context.stroke();
-        drop.y += drop.speed;
-        drop.x -= 2.1 * drop.depth;
-        if (drop.y + drop.length >= drop.hitY) {
-          createImpact(drop.x - 15, drop.hitY, drop.depth);
-          Object.assign(drop, makeDrop());
-        } else if (drop.x < -140) {
-          Object.assign(drop, makeDrop());
-        }
-      });
+      if (time - lastRipple > 260) {
+        const y = height * (0.57 + Math.random() * 0.4);
+        ripples.push({
+          x: width * (0.05 + Math.random() * 0.9),
+          y,
+          radius: 4,
+          alpha: 0.28 + Math.random() * 0.2,
+          speed: 0.9 + Math.random() * 1.2,
+          flatten: 0.15 + ((y / height) - 0.5) * 0.3,
+        });
+        lastRipple = time;
+      }
 
       ripples.forEach((ripple) => {
         context.save();
@@ -832,38 +803,7 @@ function StormRainCanvas() {
         ripple.alpha -= 0.012;
       });
 
-      splashes.forEach((splash) => {
-        const progress = splash.age / splash.life;
-        const lift = Math.sin(progress * Math.PI) * splash.size;
-        context.save();
-        context.globalCompositeOperation = "screen";
-        context.shadowColor = `rgba(145, 190, 255, ${splash.alpha})`;
-        context.shadowBlur = 7;
-        for (let particle = -2; particle <= 2; particle += 1) {
-          const spread = particle * splash.size * (0.18 + progress * 0.16);
-          const particleLift = lift * (1 - Math.abs(particle) * 0.12);
-          context.strokeStyle = `rgba(204, 226, 255, ${splash.alpha * (1 - progress)})`;
-          context.lineWidth = particle === 0 ? 1.15 : 0.72;
-          context.beginPath();
-          context.moveTo(splash.x, splash.y);
-          context.quadraticCurveTo(
-            splash.x + spread * 0.55,
-            splash.y - particleLift * 0.72,
-            splash.x + spread,
-            splash.y - particleLift,
-          );
-          context.stroke();
-          context.beginPath();
-          context.arc(splash.x + spread, splash.y - particleLift, particle === 0 ? 1.6 : 1, 0, Math.PI * 2);
-          context.fillStyle = `rgba(221, 235, 255, ${splash.alpha * (1 - progress)})`;
-          context.fill();
-        }
-        context.restore();
-        splash.age += 1;
-      });
-
       ripples = ripples.filter((ripple) => ripple.alpha > 0 && ripple.radius < 150);
-      splashes = splashes.filter((splash) => splash.age < splash.life);
       frame = window.requestAnimationFrame(draw);
     };
 
@@ -883,13 +823,13 @@ function StormMarquee() {
   const { scrollYProgress } = useScroll();
   const rowOneX = useTransform(scrollYProgress, [0, 1], [-620, 220]);
   const rowTwoX = useTransform(scrollYProgress, [0, 1], [120, -720]);
-  const firstRow = stormMarqueeImages.slice(0, 8);
-  const secondRow = stormMarqueeImages.slice(8);
+  const firstRow = stormMarqueeImages.slice(0, 6);
+  const secondRow = stormMarqueeImages.slice(8, 14);
 
   const renderRow = (images: string[]) =>
-    [...images, ...images, ...images].map((src, index) => (
+    [...images, ...images].map((src, index) => (
       <figure className="storm-marquee-tile" key={`${src}-${index}`}>
-        <img src={src} alt="" loading="lazy" decoding="async" />
+        <StormImage src={src} alt="" />
       </figure>
     ));
 
@@ -952,15 +892,13 @@ function StormProjectCard({
         >
           <span className="storm-project-left">
             {project.images.slice(0, 2).map(([src, alt]) => (
-              <img key={src} src={src} alt={alt} loading="lazy" decoding="async" />
+              <StormImage key={src} src={src} alt={alt} />
             ))}
           </span>
           <span className="storm-project-right">
-            <img
+            <StormImage
               src={(project.images[2] ?? project.images[0])[0]}
               alt={(project.images[2] ?? project.images[0])[1]}
-              loading="lazy"
-              decoding="async"
             />
           </span>
         </button>
@@ -994,7 +932,7 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1.15, delay: 0.34, ease: easeOut }}
         >
-          <img src="/ip/ip-cover.webp" alt="田佳林的三维人物视觉形象" fetchPriority="high" />
+          <StormImage src="/ip/ip-cover.webp" alt="田佳林的三维人物视觉形象" eager />
         </motion.div>
         <div className="storm-hero-bottom">
           <motion.p
@@ -1020,10 +958,10 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
       <StormMarquee />
 
       <section className="storm-about" id="storm-about">
-        <AccentArtwork src="/ip/ip-white-hood.webp" alt="白色连帽三维人物" className="storm-decor storm-decor-one" label="" />
-        <AccentArtwork src="/ip/ip-purple.webp" alt="紫色环境光三维人物" className="storm-decor storm-decor-two" label="" />
-        <AccentArtwork src="/ip/ip-blue.webp" alt="蓝色轮廓光三维人物" className="storm-decor storm-decor-three" label="" />
-        <AccentArtwork src="/ip/ip-closeup.webp" alt="三维人物面部细节" className="storm-decor storm-decor-four" label="" />
+        <AccentArtwork src="/mobile/ip/ip-white-hood.webp" alt="白色连帽三维人物" className="storm-decor storm-decor-one" label="" />
+        <AccentArtwork src="/mobile/ip/ip-purple.webp" alt="紫色环境光三维人物" className="storm-decor storm-decor-two" label="" />
+        <AccentArtwork src="/mobile/ip/ip-blue.webp" alt="蓝色轮廓光三维人物" className="storm-decor storm-decor-three" label="" />
+        <AccentArtwork src="/mobile/ip/ip-closeup.webp" alt="三维人物面部细节" className="storm-decor storm-decor-four" label="" />
         <motion.div
           className="storm-about-copy"
           initial={{ opacity: 0, y: 50 }}
@@ -1090,7 +1028,7 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
               viewport={{ once: true, margin: "-60px" }}
               transition={{ duration: 0.65, delay: (index % 3) * 0.07, ease: easeOut }}
             >
-              <figure><img src={work.cover ?? work.images[0]} alt={work.title} loading="lazy" decoding="async" /></figure>
+              <figure><StormImage src={work.cover ?? work.images[0]} alt={work.title} /></figure>
               <span>{String(index + 1).padStart(2, "0")}</span>
               <div><h4>{work.title}</h4><p>{work.type}</p></div>
               <ArrowRight size={17} />
