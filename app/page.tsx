@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { archiveProjects } from "./archive-projects";
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -66,14 +67,21 @@ const featuredProjects = [
     images: [
       ["/work/lays-basketball.webp", "乐事与陕西联合联名项目主视觉"],
       ["/work/lays-mascot.webp", "乐事联名吉祥物与包装系统"],
-      ["/hero-lays-union.png", "乐事与陕西联合球迷整合传播视觉"],
+      ["/hero-lays-union.webp", "乐事与陕西联合球迷整合传播视觉"],
       ["/work/portfolio-sports-pure.webp", "陕西联合赛事终端设计"],
       ["/work/portfolio-sports-pepsi.webp", "陕西联合赛事终端延展设计"],
     ],
   },
 ];
 
-const moreWorks = [
+type GalleryProject = {
+  title: string;
+  type: string;
+  images: string[];
+  cover?: string;
+};
+
+const moreWorks: GalleryProject[] = [
   {
     title: "贵阳品牌馆概念",
     type: "概念与空间叙事",
@@ -130,7 +138,7 @@ const moreWorks = [
     images: [
       "/work/portfolio-sports-pure.webp",
       "/work/portfolio-sports-pepsi.webp",
-      "/hero-lays-union.png",
+      "/hero-lays-union.webp",
     ],
   },
   {
@@ -138,13 +146,8 @@ const moreWorks = [
     type: "区域视觉与品牌触点",
     images: ["/work/lays-guiyang.webp", "/work/guiyang-concept.webp", "/work/guiyang-merch.webp"],
   },
+  ...archiveProjects,
 ];
-
-type GalleryProject = {
-  title: string;
-  type: string;
-  images: string[];
-};
 
 const process = [
   ["01", "Insight", "理解品牌目标、使用场景与文化语境"],
@@ -283,6 +286,16 @@ function GalleryModal({
     };
   }, [activeIndex, onClose, onIndexChange, project]);
 
+  useEffect(() => {
+    if (!project || project.images.length < 2) return;
+
+    const nextImage = new Image();
+    const previousImage = new Image();
+    nextImage.src = project.images[(activeIndex + 1) % project.images.length];
+    previousImage.src =
+      project.images[(activeIndex - 1 + project.images.length) % project.images.length];
+  }, [activeIndex, project]);
+
   return (
     <AnimatePresence>
       {project ? (
@@ -320,6 +333,7 @@ function GalleryModal({
                   key={project.images[activeIndex]}
                   src={project.images[activeIndex]}
                   alt={`${project.title} 项目图 ${activeIndex + 1}`}
+                  decoding="async"
                   initial={{ opacity: 0, x: 22 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -22 }}
@@ -437,7 +451,7 @@ export default function Home() {
         <div className="hero-frame">
           <img
             className="hero-art"
-            src="/hero-lays-union.png"
+            src="/hero-lays-union.webp"
             alt="乐事与陕西联合球迷整合传播视觉"
             fetchPriority="high"
           />
@@ -556,7 +570,12 @@ export default function Home() {
               aria-label={`打开 ${work.title} 项目图片`}
             >
               <figure className="more-image-frame">
-                <img src={work.images[0]} alt={work.title} loading="lazy" />
+                <img
+                  src={work.cover ?? work.images[0]}
+                  alt={work.title}
+                  loading="lazy"
+                  decoding="async"
+                />
               </figure>
               <div className="more-work-meta">
                 <span>{String(index + 1).padStart(2, "0")}</span>
