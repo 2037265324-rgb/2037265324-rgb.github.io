@@ -691,18 +691,58 @@ function StormRainCanvas() {
     let width = 0;
     let height = 0;
     let frame = 0;
-    let lastRipple = 0;
-    let drops: Array<{ x: number; y: number; length: number; speed: number; alpha: number; width: number }> = [];
-    let ripples: Array<{ x: number; y: number; radius: number; alpha: number; speed: number }> = [];
+    let drops: Array<{
+      x: number;
+      y: number;
+      hitY: number;
+      length: number;
+      speed: number;
+      alpha: number;
+      width: number;
+      depth: number;
+    }> = [];
+    let ripples: Array<{ x: number; y: number; radius: number; alpha: number; speed: number; flatten: number }> = [];
+    let splashes: Array<{ x: number; y: number; age: number; life: number; size: number; alpha: number }> = [];
 
-    const makeDrop = (randomY = false) => ({
-      x: Math.random() * (width + 180),
-      y: randomY ? Math.random() * height : -80 - Math.random() * 160,
-      length: 30 + Math.random() * 86,
-      speed: 16 + Math.random() * 22,
-      alpha: 0.16 + Math.random() * 0.42,
-      width: 0.55 + Math.random() * 1.15,
-    });
+    const makeDrop = (randomY = false) => {
+      const depth = 0.35 + Math.random() * 0.65;
+      const hitY = height * (0.56 + Math.random() * 0.43);
+      return {
+        x: Math.random() * (width + 220),
+        y: randomY ? Math.random() * hitY : -100 - Math.random() * 220,
+        hitY,
+        length: (28 + Math.random() * 76) * depth,
+        speed: (15 + Math.random() * 23) * depth,
+        alpha: (0.13 + Math.random() * 0.46) * depth,
+        width: 0.5 + depth * 1.25,
+        depth,
+      };
+    };
+
+    const createImpact = (x: number, y: number, depth: number) => {
+      if (Math.random() < 0.58) {
+        ripples.push({
+          x,
+          y,
+          radius: 2 + depth * 2,
+          alpha: 0.22 + depth * 0.34,
+          speed: 1.25 + depth * 1.65,
+          flatten: 0.15 + ((y / height) - 0.5) * 0.3,
+        });
+      }
+      if (Math.random() < 0.48) {
+        splashes.push({
+          x,
+          y,
+          age: 0,
+          life: 16 + Math.random() * 12,
+          size: 5 + depth * 13,
+          alpha: 0.3 + depth * 0.42,
+        });
+      }
+      if (ripples.length > 52) ripples.splice(0, ripples.length - 52);
+      if (splashes.length > 30) splashes.splice(0, splashes.length - 30);
+    };
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
@@ -723,6 +763,31 @@ function StormRainCanvas() {
       context.clearRect(0, 0, width, height);
       context.lineCap = "round";
 
+      const horizon = height * 0.54;
+      const groundGradient = context.createLinearGradient(0, horizon, 0, height);
+      groundGradient.addColorStop(0, "rgba(92, 130, 190, 0)");
+      groundGradient.addColorStop(0.35, "rgba(70, 106, 164, 0.025)");
+      groundGradient.addColorStop(1, "rgba(139, 178, 232, 0.105)");
+      context.fillStyle = groundGradient;
+      context.fillRect(0, horizon, width, height - horizon);
+
+      context.save();
+      context.globalCompositeOperation = "screen";
+      for (let sheen = 0; sheen < 5; sheen += 1) {
+        const y = horizon + (height - horizon) * ((sheen + 1) / 6);
+        const sheenGradient = context.createLinearGradient(0, y, width, y);
+        sheenGradient.addColorStop(0, "rgba(139, 180, 240, 0)");
+        sheenGradient.addColorStop(0.45, `rgba(139, 180, 240, ${0.018 + sheen * 0.006})`);
+        sheenGradient.addColorStop(1, "rgba(139, 180, 240, 0)");
+        context.strokeStyle = sheenGradient;
+        context.lineWidth = 1;
+        context.beginPath();
+        context.moveTo(0, y);
+        context.bezierCurveTo(width * 0.32, y - 3, width * 0.68, y + 3, width, y);
+        context.stroke();
+      }
+      context.restore();
+
       drops.forEach((drop, index) => {
         context.lineWidth = drop.width;
         context.strokeStyle = index % 19 === 0
@@ -733,34 +798,72 @@ function StormRainCanvas() {
         context.lineTo(drop.x - 15, drop.y + drop.length);
         context.stroke();
         drop.y += drop.speed;
-        drop.x -= 2.4;
-        if (drop.y > height + drop.length || drop.x < -120) Object.assign(drop, makeDrop());
+        drop.x -= 2.1 * drop.depth;
+        if (drop.y + drop.length >= drop.hitY) {
+          createImpact(drop.x - 15, drop.hitY, drop.depth);
+          Object.assign(drop, makeDrop());
+        } else if (drop.x < -140) {
+          Object.assign(drop, makeDrop());
+        }
       });
-
-      if (time - lastRipple > 145) {
-        ripples.push({
-          x: Math.random() * width,
-          y: height * (0.58 + Math.random() * 0.38),
-          radius: 3,
-          alpha: 0.2 + Math.random() * 0.24,
-          speed: 1.35 + Math.random() * 1.3,
-        });
-        lastRipple = time;
-      }
 
       ripples.forEach((ripple) => {
-        context.lineWidth = 0.8;
-        context.strokeStyle = `rgba(175, 205, 255, ${ripple.alpha})`;
-        context.beginPath();
-        context.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.3, 0, 0, Math.PI * 2);
-        context.stroke();
-        context.beginPath();
-        context.ellipse(ripple.x, ripple.y, ripple.radius * 0.58, ripple.radius * 0.16, 0, 0, Math.PI * 2);
-        context.stroke();
+        context.save();
+        context.globalCompositeOperation = "screen";
+        context.shadowColor = `rgba(123, 169, 241, ${ripple.alpha * 0.75})`;
+        context.shadowBlur = 8;
+        [1, 0.72, 0.42].forEach((ring, ringIndex) => {
+          context.lineWidth = ringIndex === 0 ? 1.2 : 0.55;
+          context.strokeStyle = `rgba(187, 215, 255, ${ripple.alpha * (1 - ringIndex * 0.2)})`;
+          context.beginPath();
+          context.ellipse(
+            ripple.x,
+            ripple.y,
+            ripple.radius * ring,
+            ripple.radius * ring * Math.max(0.11, ripple.flatten),
+            0,
+            0,
+            Math.PI * 2,
+          );
+          context.stroke();
+        });
+        context.restore();
         ripple.radius += ripple.speed;
-        ripple.alpha -= 0.008;
+        ripple.alpha -= 0.012;
       });
-      ripples = ripples.filter((ripple) => ripple.alpha > 0 && ripple.radius < 130);
+
+      splashes.forEach((splash) => {
+        const progress = splash.age / splash.life;
+        const lift = Math.sin(progress * Math.PI) * splash.size;
+        context.save();
+        context.globalCompositeOperation = "screen";
+        context.shadowColor = `rgba(145, 190, 255, ${splash.alpha})`;
+        context.shadowBlur = 7;
+        for (let particle = -2; particle <= 2; particle += 1) {
+          const spread = particle * splash.size * (0.18 + progress * 0.16);
+          const particleLift = lift * (1 - Math.abs(particle) * 0.12);
+          context.strokeStyle = `rgba(204, 226, 255, ${splash.alpha * (1 - progress)})`;
+          context.lineWidth = particle === 0 ? 1.15 : 0.72;
+          context.beginPath();
+          context.moveTo(splash.x, splash.y);
+          context.quadraticCurveTo(
+            splash.x + spread * 0.55,
+            splash.y - particleLift * 0.72,
+            splash.x + spread,
+            splash.y - particleLift,
+          );
+          context.stroke();
+          context.beginPath();
+          context.arc(splash.x + spread, splash.y - particleLift, particle === 0 ? 1.6 : 1, 0, Math.PI * 2);
+          context.fillStyle = `rgba(221, 235, 255, ${splash.alpha * (1 - progress)})`;
+          context.fill();
+        }
+        context.restore();
+        splash.age += 1;
+      });
+
+      ripples = ripples.filter((ripple) => ripple.alpha > 0 && ripple.radius < 150);
+      splashes = splashes.filter((splash) => splash.age < splash.life);
       frame = window.requestAnimationFrame(draw);
     };
 
