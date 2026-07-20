@@ -710,6 +710,121 @@ function StormImage({
   );
 }
 
+function StormParticleCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let width = 0;
+    let height = 0;
+    let frame = 0;
+    let previousTime = 0;
+    let isMobile = false;
+    let particles: Array<{
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      size: number;
+      alpha: number;
+      color: string;
+      phase: number;
+    }> = [];
+
+    const createParticle = () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * (isMobile ? 0.22 : 0.42),
+      vy: -0.12 - Math.random() * (isMobile ? 0.28 : 0.48),
+      size: 0.7 + Math.random() * (isMobile ? 1.3 : 2.1),
+      alpha: 0.2 + Math.random() * 0.62,
+      color: Math.random() > 0.78 ? "238, 45, 132" : "116, 169, 255",
+      phase: Math.random() * Math.PI * 2,
+    });
+
+    const resize = () => {
+      isMobile = window.innerWidth <= 700;
+      const ratio = Math.min(window.devicePixelRatio || 1, isMobile ? 1 : 1.35);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      const count = isMobile ? 30 : Math.min(96, Math.max(66, Math.floor(width / 18)));
+      particles = Array.from({ length: count }, createParticle);
+    };
+
+    const draw = (time: number) => {
+      const frameInterval = isMobile ? 1000 / 24 : 1000 / 60;
+      if (time - previousTime < frameInterval) {
+        frame = window.requestAnimationFrame(draw);
+        return;
+      }
+      previousTime = time;
+      context.clearRect(0, 0, width, height);
+      context.globalCompositeOperation = "screen";
+
+      if (!isMobile) {
+        for (let first = 0; first < particles.length; first += 2) {
+          for (let second = first + 2; second < particles.length; second += 2) {
+            const dx = particles[first].x - particles[second].x;
+            const dy = particles[first].y - particles[second].y;
+            const distance = Math.hypot(dx, dy);
+            if (distance < 112) {
+              context.strokeStyle = `rgba(112, 162, 242, ${(1 - distance / 112) * 0.12})`;
+              context.lineWidth = 0.45;
+              context.beginPath();
+              context.moveTo(particles[first].x, particles[first].y);
+              context.lineTo(particles[second].x, particles[second].y);
+              context.stroke();
+            }
+          }
+        }
+      }
+
+      particles.forEach((particle) => {
+        particle.phase += 0.018;
+        particle.x += particle.vx + Math.sin(particle.phase) * 0.08;
+        particle.y += particle.vy;
+        if (particle.y < -18) particle.y = height + 18;
+        if (particle.x < -18) particle.x = width + 18;
+        if (particle.x > width + 18) particle.x = -18;
+
+        const glow = 0.64 + Math.sin(particle.phase * 1.7) * 0.36;
+        context.fillStyle = `rgba(${particle.color}, ${particle.alpha * glow})`;
+        context.beginPath();
+        context.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        context.fill();
+        if (!isMobile && particle.size > 1.7) {
+          context.fillStyle = `rgba(${particle.color}, ${particle.alpha * 0.12})`;
+          context.beginPath();
+          context.arc(particle.x, particle.y, particle.size * 4.2, 0, Math.PI * 2);
+          context.fill();
+        }
+      });
+
+      context.globalCompositeOperation = "source-over";
+      frame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    frame = window.requestAnimationFrame(draw);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas className="storm-particle-canvas" ref={canvasRef} aria-hidden="true" />;
+}
+
 function StormRainCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -957,7 +1072,16 @@ function StormProjectCard({
 function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void }) {
   return (
     <main className="storm-site">
+      <StormParticleCanvas />
       <StormRainCanvas />
+      <div className="storm-hud-overlay" aria-hidden="true">
+        <span className="storm-hud-corner storm-hud-tl" />
+        <span className="storm-hud-corner storm-hud-tr" />
+        <span className="storm-hud-corner storm-hud-bl" />
+        <span className="storm-hud-corner storm-hud-br" />
+        <p className="storm-hud-status">SYSTEM / ONLINE <i /> PARTICLE FIELD 96</p>
+        <p className="storm-hud-coords">34.3416° N / 108.9398° E</p>
+      </div>
       <section className="storm-hero" id="storm-top">
         <nav className="storm-nav" aria-label="大雨版主导航">
           <a href="#storm-about">关于我</a>
