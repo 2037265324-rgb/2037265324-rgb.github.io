@@ -267,6 +267,9 @@ function RainCanvas() {
     let width = 0;
     let height = 0;
     let drops: Array<{ x: number; y: number; length: number; speed: number; opacity: number }> = [];
+    let ripples: Array<{ x: number; y: number; radius: number; opacity: number; speed: number }> = [];
+    let lastAutoRipple = 0;
+    let lastPointerRipple = 0;
 
     const makeDrop = (randomY = false) => ({
       x: Math.random() * width,
@@ -288,7 +291,19 @@ function RainCanvas() {
       drops = Array.from({ length: Math.min(78, Math.max(34, Math.floor(width / 20))) }, () => makeDrop(true));
     };
 
-    const draw = () => {
+    const addRipple = (x: number, y: number, opacity = 0.24) => {
+      ripples.push({ x, y, radius: 4, opacity, speed: 0.72 + Math.random() * 0.46 });
+      if (ripples.length > 18) ripples.shift();
+    };
+
+    const addPointerRipple = (event: PointerEvent) => {
+      const now = performance.now();
+      if (event.type === "pointermove" && now - lastPointerRipple < 210) return;
+      lastPointerRipple = now;
+      addRipple(event.clientX, event.clientY, event.type === "pointerdown" ? 0.42 : 0.15);
+    };
+
+    const draw = (time: number) => {
       context.clearRect(0, 0, width, height);
       context.lineWidth = 0.8;
 
@@ -310,16 +325,50 @@ function RainCanvas() {
         }
       });
 
+      if (time - lastAutoRipple > 1250) {
+        addRipple(Math.random() * width, height * (0.22 + Math.random() * 0.7), 0.11 + Math.random() * 0.1);
+        lastAutoRipple = time;
+      }
+
+      ripples.forEach((ripple) => {
+        const rippleGradient = context.createLinearGradient(
+          ripple.x - ripple.radius,
+          ripple.y,
+          ripple.x + ripple.radius,
+          ripple.y,
+        );
+        rippleGradient.addColorStop(0, "rgba(130, 174, 255, 0)");
+        rippleGradient.addColorStop(0.5, `rgba(174, 205, 255, ${ripple.opacity})`);
+        rippleGradient.addColorStop(1, "rgba(130, 174, 255, 0)");
+        context.strokeStyle = rippleGradient;
+        context.lineWidth = 1;
+        context.beginPath();
+        context.ellipse(ripple.x, ripple.y, ripple.radius, ripple.radius * 0.34, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.globalAlpha = 0.45;
+        context.beginPath();
+        context.ellipse(ripple.x, ripple.y, ripple.radius * 0.72, ripple.radius * 0.22, 0, 0, Math.PI * 2);
+        context.stroke();
+        context.globalAlpha = 1;
+        ripple.radius += ripple.speed;
+        ripple.opacity -= 0.0026;
+      });
+      ripples = ripples.filter((ripple) => ripple.opacity > 0 && ripple.radius < 190);
+
       frame = window.requestAnimationFrame(draw);
     };
 
     resize();
     window.addEventListener("resize", resize);
+    window.addEventListener("pointerdown", addPointerRipple, { passive: true });
+    window.addEventListener("pointermove", addPointerRipple, { passive: true });
     frame = window.requestAnimationFrame(draw);
 
     return () => {
       window.cancelAnimationFrame(frame);
       window.removeEventListener("resize", resize);
+      window.removeEventListener("pointerdown", addPointerRipple);
+      window.removeEventListener("pointermove", addPointerRipple);
     };
   }, []);
 
@@ -663,6 +712,15 @@ export default function Home() {
         </div>
       </section>
 
+      <div className="fluid-ribbon fluid-ribbon-top" aria-hidden="true">
+        <div>
+          <span>FORM FOLLOWS FEELING</span><i />
+          <span>DESIGN IN MOTION</span><i />
+          <span>FORM FOLLOWS FEELING</span><i />
+          <span>DESIGN IN MOTION</span><i />
+        </div>
+      </div>
+
       <section className="about-section" id="about">
         <div className="about-layout section-glow">
           <div className="about-card">
@@ -740,6 +798,17 @@ export default function Home() {
           {featuredProjects.map((project, index) => (
             <ProjectCard index={index} key={project.number} project={project} onOpen={openGallery} />
           ))}
+        </div>
+
+        <div className="fluid-ribbon fluid-ribbon-work" aria-hidden="true">
+          <div>
+            <span>BRAND</span><i />
+            <span>SPACE</span><i />
+            <span>PRODUCT</span><i />
+            <span>AIGC</span><i />
+            <span>BRAND</span><i />
+            <span>SPACE</span><i />
+          </div>
         </div>
 
         <div className="more-work-heading">
