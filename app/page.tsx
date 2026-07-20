@@ -253,6 +253,173 @@ function AnimatedLetter({
   return <motion.span style={{ opacity }}>{character}</motion.span>;
 }
 
+function RainCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    let frame = 0;
+    let width = 0;
+    let height = 0;
+    let drops: Array<{ x: number; y: number; length: number; speed: number; opacity: number }> = [];
+
+    const makeDrop = (randomY = false) => ({
+      x: Math.random() * width,
+      y: randomY ? Math.random() * height : -40,
+      length: 16 + Math.random() * 44,
+      speed: 7 + Math.random() * 11,
+      opacity: 0.08 + Math.random() * 0.24,
+    });
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 1.5);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = Math.floor(width * ratio);
+      canvas.height = Math.floor(height * ratio);
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+      drops = Array.from({ length: Math.min(78, Math.max(34, Math.floor(width / 20))) }, () => makeDrop(true));
+    };
+
+    const draw = () => {
+      context.clearRect(0, 0, width, height);
+      context.lineWidth = 0.8;
+
+      drops.forEach((drop, index) => {
+        const gradient = context.createLinearGradient(drop.x, drop.y, drop.x - 8, drop.y + drop.length);
+        gradient.addColorStop(0, "rgba(159, 199, 255, 0)");
+        gradient.addColorStop(0.55, `rgba(159, 199, 255, ${drop.opacity})`);
+        gradient.addColorStop(1, "rgba(159, 199, 255, 0)");
+        context.strokeStyle = index % 17 === 0 ? `rgba(238, 35, 72, ${drop.opacity * 0.72})` : gradient;
+        context.beginPath();
+        context.moveTo(drop.x, drop.y);
+        context.lineTo(drop.x - 8, drop.y + drop.length);
+        context.stroke();
+
+        drop.y += drop.speed;
+        drop.x -= 0.7;
+        if (drop.y > height + drop.length || drop.x < -30) {
+          Object.assign(drop, makeDrop());
+        }
+      });
+
+      frame = window.requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    frame = window.requestAnimationFrame(draw);
+
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas className="rain-canvas" ref={canvasRef} aria-hidden="true" />;
+}
+
+function CursorAura() {
+  const auraRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const aura = auraRef.current;
+    if (!aura || window.matchMedia("(pointer: coarse)").matches) return;
+
+    const move = (event: PointerEvent) => {
+      aura.style.setProperty("--cursor-x", `${event.clientX}px`);
+      aura.style.setProperty("--cursor-y", `${event.clientY}px`);
+      aura.dataset.visible = "true";
+    };
+
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
+
+  return <div className="cursor-aura" ref={auraRef} aria-hidden="true" />;
+}
+
+function InteractivePortrait() {
+  const portraitRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const portrait = portraitRef.current;
+    if (!portrait || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const move = (event: PointerEvent) => {
+      const horizontal = (event.clientX / window.innerWidth - 0.5) * 2;
+      const vertical = (event.clientY / window.innerHeight - 0.5) * 2;
+      portrait.style.setProperty("--look-x", `${horizontal * 7}px`);
+      portrait.style.setProperty("--look-y", `${vertical * 5}px`);
+      portrait.style.setProperty("--tilt-x", `${vertical * -2.2}deg`);
+      portrait.style.setProperty("--tilt-y", `${horizontal * 3.6}deg`);
+    };
+
+    window.addEventListener("pointermove", move, { passive: true });
+    return () => window.removeEventListener("pointermove", move);
+  }, []);
+
+  return (
+    <motion.figure
+      className="interactive-portrait"
+      ref={portraitRef}
+      initial={{ opacity: 0, x: 48, scale: 0.96 }}
+      animate={{ opacity: 1, x: 0, scale: 1 }}
+      transition={{ duration: 1.15, delay: 0.18, ease: easeOut }}
+    >
+      <div className="portrait-halo" aria-hidden="true" />
+      <div className="portrait-tilt-layer">
+        <img
+          src="/ip/ip-cover.webp"
+          alt="冷蓝灯光下的红发三维人物形象"
+          fetchPriority="high"
+        />
+        <div className="portrait-eyes" aria-hidden="true">
+          <span className="portrait-eye portrait-eye-left"><i /></span>
+          <span className="portrait-eye portrait-eye-right"><i /></span>
+        </div>
+        <span className="portrait-scanline" aria-hidden="true" />
+      </div>
+      <figcaption>
+        <span>INTERACTIVE IP / 01</span>
+        <strong>移动鼠标 · 目光随行</strong>
+      </figcaption>
+    </motion.figure>
+  );
+}
+
+function AccentArtwork({
+  src,
+  alt,
+  className,
+  label,
+}: {
+  src: string;
+  alt: string;
+  className: string;
+  label: string;
+}) {
+  return (
+    <motion.figure
+      className={`accent-artwork ${className}`}
+      initial={{ opacity: 0, y: 46, rotate: -1.5 }}
+      whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+      viewport={{ once: true, margin: "-90px" }}
+      transition={{ duration: 0.95, ease: easeOut }}
+    >
+      <img src={src} alt={alt} loading="lazy" decoding="async" />
+      <figcaption>{label}</figcaption>
+    </motion.figure>
+  );
+}
+
 function GalleryModal({
   project,
   activeIndex,
@@ -446,17 +613,14 @@ export default function Home() {
   }
 
   return (
-    <main>
+    <main className="portfolio-site">
+      <RainCanvas />
+      <CursorAura />
       <section className="cinematic-hero" id="top">
         <div className="hero-frame">
-          <img
-            className="hero-art"
-            src="/hero-lays-union.webp"
-            alt="乐事与陕西联合球迷整合传播视觉"
-            fetchPriority="high"
-          />
           <div className="noise-overlay" aria-hidden="true" />
           <div className="hero-gradient" aria-hidden="true" />
+          <div className="hero-atmosphere" aria-hidden="true" />
 
           <nav className="nav-pill" aria-label="主导航">
             <a href="#about">个人简介</a>
@@ -465,62 +629,83 @@ export default function Home() {
             <a href="#contact">联系合作</a>
           </nav>
 
-          <div className="hero-content">
-            <h1>
-              <WordsPullUp text="JIALIN" showAsterisk />
-            </h1>
+          <div className="hero-stage">
             <motion.div
-              className="hero-side"
-              initial={{ opacity: 0, y: 20 }}
+              className="hero-intro"
+              initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.9, delay: 0.5, ease: easeOut }}
+              transition={{ duration: 1, delay: 0.08, ease: easeOut }}
             >
-              <p>
+              <p className="hero-kicker">TIAN JIALIN · PRODUCT DESIGNER</p>
+              <h1 className="hero-name">
+                <span><WordsPullUp text="TIAN" /></span>
+                <span><WordsPullUp text="JIALIN" showAsterisk /></span>
+              </h1>
+              <p className="hero-role">PRODUCT / SPATIAL / VISUAL</p>
+              <p className="hero-description">
                 田佳林，产品设计师。将品牌、空间、产品与三维视觉组织成可感知、可落地、可被记住的真实体验。
               </p>
-              <a className="pill-button" href="#work">
-                查看作品
-                <span>
-                  <ArrowRight aria-hidden="true" size={18} />
-                </span>
-              </a>
+              <div className="hero-actions">
+                <a className="pill-button" href="#work">
+                  查看作品
+                  <span><ArrowRight aria-hidden="true" size={18} /></span>
+                </a>
+                <span className="hero-scroll-cue"><i /> SCROLL TO EXPLORE</span>
+              </div>
             </motion.div>
+            <InteractivePortrait />
           </div>
 
           <div className="hero-meta">
-            <span>TIAN JIALIN / PRODUCT DESIGNER</span>
-            <span>SELECTED WORKS · 2023—2026</span>
+            <span>XI&apos;AN / CHINA · 34.3416° N</span>
+            <span>SELECTED WORKS · 2023—2026 / VISUAL SYSTEM 01</span>
           </div>
         </div>
       </section>
 
       <section className="about-section" id="about">
-        <div className="about-card">
-          <p className="section-label">Product designer · China</p>
-          <h2>
-            <WordsPullUpMultiStyle
-              segments={[
-                { text: "我是田佳林，" },
-                { text: "一名产品设计师。", className: "serif-italic" },
-                { text: "把产品、空间与视觉组织成真实体验。" },
-              ]}
-            />
-          </h2>
-          <AnimatedParagraph text="我关注品牌如何在真实世界里被看见、被触碰，也被记住。工作跨越品牌视觉、空间体验、产品渲染与整合营销，并习惯用三维工具把抽象概念快速变成可讨论、可验证的方案。" />
+        <div className="about-layout section-glow">
+          <div className="about-card">
+            <p className="section-label">Product designer · China</p>
+            <h2>
+              <WordsPullUpMultiStyle
+                segments={[
+                  { text: "我是田佳林，" },
+                  { text: "一名产品设计师。", className: "serif-italic" },
+                  { text: "把产品、空间与视觉组织成真实体验。" },
+                ]}
+              />
+            </h2>
+            <AnimatedParagraph text="我关注品牌如何在真实世界里被看见、被触碰，也被记住。工作跨越品牌视觉、空间体验、产品渲染与整合营销，并习惯用三维工具把抽象概念快速变成可讨论、可验证的方案。" />
 
-          <div className="about-stats">
-            <div>
-              <span>FOCUS</span>
-              <strong>品牌 / 空间 / 产品 / AIGC</strong>
+            <div className="about-stats">
+              <div>
+                <span>FOCUS</span>
+                <strong>品牌 / 空间 / 产品 / AIGC</strong>
+              </div>
+              <div>
+                <span>TOOLS</span>
+                <strong>Rhino / KeyShot / PS / AI</strong>
+              </div>
+              <div>
+                <span>APPROACH</span>
+                <strong>策略 / 三维验证 / 落地</strong>
+              </div>
             </div>
-            <div>
-              <span>TOOLS</span>
-              <strong>Rhino / KeyShot / PS / AI</strong>
-            </div>
-            <div>
-              <span>APPROACH</span>
-              <strong>策略 / 三维验证 / 落地</strong>
-            </div>
+          </div>
+          <div className="about-art-column">
+            <AccentArtwork
+              src="/ip/ip-white-hood.webp"
+              alt="月光下的白色连帽三维人物"
+              className="about-primary-art"
+              label="CHARACTER STUDY / LIGHT 02"
+            />
+            <AccentArtwork
+              src="/ip/ip-moodboard.webp"
+              alt="红黑三维人物造型情绪板"
+              className="about-moodboard-art"
+              label="MOOD / FORM / ATTITUDE"
+            />
           </div>
         </div>
       </section>
@@ -536,6 +721,19 @@ export default function Home() {
               ]}
             />
           </h2>
+        </div>
+
+        <div className="work-visual-divider section-glow">
+          <AccentArtwork
+            src="/ip/ip-purple.webp"
+            alt="紫红环境光下的三维人物形象"
+            className="work-purple-art"
+            label="FORM STUDY / 03"
+          />
+          <div className="work-manifesto">
+            <span>DESIGN AS EXPERIENCE</span>
+            <p>策略定方向，三维定质感，视觉让故事真正发生。</p>
+          </div>
         </div>
 
         <div className="featured-grid">
@@ -592,6 +790,12 @@ export default function Home() {
         <div className="process-block" id="process">
           <div className="process-title">
             <p className="section-label">Design approach</p>
+            <AccentArtwork
+              src="/ip/ip-blue.webp"
+              alt="蓝色轮廓光下手持眼镜的三维人物"
+              className="process-character-art"
+              label="PROCESS / OBSERVE CLOSELY"
+            />
             <h2>
               清晰地想，
               <br />
@@ -611,10 +815,20 @@ export default function Home() {
       </section>
 
       <footer id="contact">
-        <p className="section-label">Available for brand / space / visual collaboration</p>
-        <h2>
-          LET&apos;S <span>CREATE</span> NEXT.
-        </h2>
+        <div className="footer-heading-row section-glow">
+          <div>
+            <p className="section-label">Available for brand / space / visual collaboration</p>
+            <h2>
+              LET&apos;S <span>CREATE</span> NEXT.
+            </h2>
+          </div>
+          <AccentArtwork
+            src="/ip/ip-closeup.webp"
+            alt="红发三维人物面部细节特写"
+            className="footer-character-art"
+            label="DETAIL / CHARACTER 05"
+          />
+        </div>
         <a className="contact-link" href="tel:+8613279403213">
           132 7940 3213
           <ArrowRight aria-hidden="true" />
