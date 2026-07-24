@@ -853,6 +853,10 @@ img {
   background: #050505;
 }
 
+.gallery-picture {
+  display: contents;
+}
+
 .gallery-viewer img {
   position: absolute;
   inset: 0;

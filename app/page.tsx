@@ -72,6 +72,23 @@ const featuredProjects = [
       ["/work/portfolio-sports-pepsi.webp", "陕西联合赛事终端延展设计"],
     ],
   },
+  {
+    number: "05",
+    year: "2025.12",
+    title: "乐事品牌馆 · 大唐不夜城",
+    subtitle: "把盛唐文化转译为年轻化的零售体验",
+    description:
+      "以唐礼坊的场域气质为起点，将唐风建筑、宫廷人物、城市符号与乐事薯片语言融合，完成品牌馆外观、内部动线、零售陈列与互动打卡的整体空间设计。",
+    role: ["品牌馆概念", "空间视觉", "三维效果图", "零售体验"],
+    images: [
+      ["/work/datang-lays-01.webp", "大唐不夜城乐事品牌馆场景效果图"],
+      ["/work/datang-lays-02.webp", "大唐不夜城乐事品牌馆品牌墙展示"],
+      ["/work/datang-lays-03.webp", "大唐不夜城乐事品牌馆集章休息区"],
+      ["/work/datang-lays-04.webp", "大唐不夜城乐事品牌馆周边展示区"],
+      ["/work/datang-lays-05.webp", "大唐不夜城乐事品牌馆造型堆头售货区"],
+      ["/work/datang-lays-06.webp", "大唐不夜城乐事品牌馆特调区收银台"],
+    ],
+  },
 ];
 
 type GalleryProject = {
@@ -91,7 +108,6 @@ const moreWorks: GalleryProject[] = [
     title: "佳得乐 × 凯尔特人",
     type: "运动零售体验",
     images: [
-      "/work/gatorade-retail.webp",
       "/work/portfolio-brand-selection.webp",
       "/work/portfolio-activation-selection.webp",
     ],
@@ -505,11 +521,14 @@ function GalleryModal({
   useEffect(() => {
     if (!project || project.images.length < 2) return;
 
+    const sourceForViewport = (src: string) =>
+      window.matchMedia("(max-width: 700px)").matches ? stormMobileSource(src) : src;
     const nextImage = new Image();
     const previousImage = new Image();
-    nextImage.src = project.images[(activeIndex + 1) % project.images.length];
-    previousImage.src =
-      project.images[(activeIndex - 1 + project.images.length) % project.images.length];
+    nextImage.src = sourceForViewport(project.images[(activeIndex + 1) % project.images.length]);
+    previousImage.src = sourceForViewport(
+      project.images[(activeIndex - 1 + project.images.length) % project.images.length],
+    );
   }, [activeIndex, project]);
 
   return (
@@ -545,16 +564,21 @@ function GalleryModal({
 
             <div className="gallery-viewer">
               <AnimatePresence mode="wait">
-                <motion.img
-                  key={project.images[activeIndex]}
-                  src={project.images[activeIndex]}
-                  alt={`${project.title} 项目图 ${activeIndex + 1}`}
-                  decoding="async"
-                  initial={{ opacity: 0, x: 22 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -22 }}
-                  transition={{ duration: 0.3, ease: easeOut }}
-                />
+                <picture className="gallery-picture" key={project.images[activeIndex]}>
+                  <source
+                    media="(max-width: 700px)"
+                    srcSet={stormMobileSource(project.images[activeIndex])}
+                  />
+                  <motion.img
+                    src={project.images[activeIndex]}
+                    alt={`${project.title} 项目图 ${activeIndex + 1}`}
+                    decoding="async"
+                    initial={{ opacity: 0, x: 22 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -22 }}
+                    transition={{ duration: 0.3, ease: easeOut }}
+                  />
+                </picture>
               </AnimatePresence>
             </div>
 
@@ -631,7 +655,7 @@ function ProjectCard({
       <div className="project-gallery">
         {project.images.map(([src, alt]) => (
           <figure className="full-image-frame" key={src}>
-            <img src={src} alt={alt} loading="lazy" />
+            <StormImage src={src} alt={alt} />
           </figure>
         ))}
       </div>
@@ -669,7 +693,7 @@ const stormMarqueeImages = [
   "/work/lays-fifa.webp",
   "/work/cultural-packaging.webp",
   "/work/pepsi-blindbox.webp",
-  "/work/gatorade-retail.webp",
+  "/work/datang-lays-01.webp",
   "/work/lays-popup.webp",
   "/work/portfolio-brand-selection.webp",
   "/work/portfolio-activation-selection.webp",
@@ -1380,7 +1404,7 @@ export default function Home() {
 
       <section className="work-section bg-noise" id="work">
         <div className="work-heading">
-          <p className="section-label">Selected projects · 01—04</p>
+          <p className="section-label">Selected projects · 01—05</p>
           <h2>
             <WordsPullUpMultiStyle
               segments={[
@@ -1447,11 +1471,9 @@ export default function Home() {
               aria-label={`打开 ${work.title} 项目图片`}
             >
               <figure className="more-image-frame">
-                <img
+                <StormImage
                   src={work.cover ?? work.images[0]}
                   alt={work.title}
-                  loading="lazy"
-                  decoding="async"
                 />
               </figure>
               <div className="more-work-meta">
