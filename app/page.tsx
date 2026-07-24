@@ -17,16 +17,19 @@ const featuredProjects = [
   {
     number: "01",
     year: "2026.07",
-    title: "乐事贵阳品牌馆",
-    subtitle: "把地域文化转化为可感知的品牌体验",
+    title: "乐事贵阳品牌馆 · 黔阳有乐事",
+    subtitle: "以店铺建模构建沉浸式国潮品牌场景",
     description:
-      "从贵阳城市气质、饮食文化与年轻消费语境出发，完成品牌馆概念、空间视觉、互动装置与文创触点的系统设计。",
-    role: ["前期创意", "概念方向", "空间效果图", "传播延展"],
+      "以贵阳青云市集为场域，通过店铺外观与内部空间建模，将苗绣纹样、甲秀楼、银饰图形和城市烟火气融入乐事品牌馆，并延展至零售陈列、互动打卡、文创周边与开业传播。",
+    role: ["店铺建模", "空间渲染", "整合营销", "视觉延展"],
     images: [
+      ["/work/guiyang-store-01.webp", "黔阳有乐事贵阳品牌馆店铺建模主视觉"],
       ["/work/guiyang-space.webp", "乐事贵阳品牌馆空间设计效果图"],
+      ["/work/guiyang-store-02.webp", "贵阳乐事品牌馆门店建模与空间设计"],
+      ["/work/guiyang-store-03.webp", "贵阳乐事品牌馆内部陈列建模"],
+      ["/work/guiyang-store-04.webp", "贵阳乐事品牌馆文创周边设计"],
+      ["/work/guiyang-store-05.webp", "黔阳有乐事品牌馆开业传播视觉"],
       ["/work/guiyang-merch.webp", "乐事贵阳品牌馆文创与城市印章系统"],
-      ["/work/guiyang-concept.webp", "乐事贵阳品牌馆概念视觉"],
-      ["/work/lays-guiyang.webp", "乐事贵阳城市视觉设计"],
     ],
   },
   {
@@ -100,9 +103,15 @@ type GalleryProject = {
 
 const moreWorks: GalleryProject[] = [
   {
-    title: "贵阳品牌馆概念",
-    type: "概念与空间叙事",
-    images: ["/work/guiyang-concept.webp", "/work/guiyang-space.webp", "/work/guiyang-merch.webp"],
+    title: "黔阳有乐事 · 贵阳品牌馆",
+    type: "店铺建模 / 空间设计 / 整合营销",
+    images: [
+      "/work/guiyang-store-01.webp",
+      "/work/guiyang-store-02.webp",
+      "/work/guiyang-store-03.webp",
+      "/work/guiyang-store-04.webp",
+      "/work/guiyang-store-05.webp",
+    ],
   },
   {
     title: "佳得乐 × 凯尔特人",
@@ -685,7 +694,7 @@ const stormServices = [
 ];
 
 const stormMarqueeImages = [
-  "/work/guiyang-space.webp",
+  "/work/guiyang-store-01.webp",
   "/work/lays-basketball.webp",
   "/work/pepsi-exterior.webp",
   "/work/lays-festival-kv.webp",
@@ -1077,14 +1086,14 @@ function StormProjectCard({
           aria-label={`打开 ${project.title} 项目图片`}
         >
           <span className="storm-project-left">
-            {project.images.slice(0, 2).map(([src, alt]) => (
+            {project.images.slice(1, 3).map(([src, alt]) => (
               <StormImage key={src} src={src} alt={alt} />
             ))}
           </span>
           <span className="storm-project-right">
             <StormImage
-              src={(project.images[2] ?? project.images[0])[0]}
-              alt={(project.images[2] ?? project.images[0])[1]}
+              src={project.images[0][0]}
+              alt={project.images[0][1]}
             />
           </span>
         </button>

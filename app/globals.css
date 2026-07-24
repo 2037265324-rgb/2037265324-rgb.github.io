@@ -653,6 +653,13 @@ img {
   height: clamp(230px, 27vw, 470px);
 }
 
+.project-gallery > .full-image-frame:first-child {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
 .full-image-frame img,
 .more-image-frame img {
   width: 100%;
@@ -1744,7 +1751,7 @@ footer > h2 span {
 
 .storm-project-images {
   display: grid;
-  grid-template-columns: minmax(0, 0.42fr) minmax(0, 0.58fr);
+  grid-template-columns: minmax(0, 0.32fr) minmax(0, 0.68fr);
   gap: 10px;
   min-height: 0;
   padding: 0 12px 12px;
@@ -2073,13 +2080,22 @@ footer > h2 span {
 
   .storm-project-images {
     grid-template-columns: 1fr;
+    align-items: center;
   }
 
   .storm-project-left {
     display: none;
   }
 
+  .storm-project-right {
+    align-self: center;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
   .storm-project-images img {
+    padding: 0;
     border-radius: 22px;
   }
 
@@ -3029,7 +3045,7 @@ footer::before {
 
 .storm-project-card:hover .storm-project-images img {
   filter: brightness(1.08) saturate(1.08);
-  transform: scale(1.018);
+  transform: none;
 }
 
 @media (max-width: 700px) {
