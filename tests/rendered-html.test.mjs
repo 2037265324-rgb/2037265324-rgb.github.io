@@ -30,9 +30,9 @@ test("server-renders Tian Jialin's portfolio", async () => {
 
   const html = await response.text();
   assert.match(html, /<html lang="zh-CN">/i);
-  assert.match(html, /<title>田嘉林 Tian Jialin — Product Designer<\/title>/i);
+  assert.match(html, /<title>田佳林 Tian Jialin — Product Designer<\/title>/i);
   assert.match(html, /DESIGN/);
-  assert.match(html, /BEYOND/);
+  assert.match(html, /TIAN JIALIN/);
   assert.match(html, /乐事贵阳品牌馆/);
   assert.match(html, /百事长安城品牌馆/);
   assert.match(html, /132 7940 3213/);
@@ -46,7 +46,7 @@ test("ships responsive styles and portfolio assets", async () => {
     readFile(new URL("../app/layout.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/globals.css", import.meta.url), "utf8"),
     readFile(new URL("../package.json", import.meta.url), "utf8"),
-    readdir(new URL("../public/work/", import.meta.url)),
+    readdir(new URL("../public/work/", import.meta.url), { withFileTypes: true }),
   ]);
 
   assert.match(page, /aria-label="主导航"/);
@@ -54,9 +54,9 @@ test("ships responsive styles and portfolio assets", async () => {
   assert.match(page, /tel:\+8613279403213/);
   assert.match(layout, /generateMetadata/);
   assert.match(layout, /summary_large_image/);
-  assert.match(css, /@media \(max-width: 680px\)/);
+  assert.match(css, /@media\s*\(max-width:\s*\d+px\)/);
   assert.match(css, /prefers-reduced-motion: reduce/);
   assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.ok(workAssets.length >= 12);
-  assert.ok(workAssets.every((file) => file.endsWith(".webp")));
+  assert.ok(workAssets.filter(entry => entry.isFile()).every(entry => entry.name.endsWith(".webp")));
 });

@@ -8,8 +8,10 @@ import {
   useTransform,
 } from "framer-motion";
 import { ArrowRight, Check, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { archiveProjects } from "./archive-projects";
+
+const ExhibitionPortfolio = lazy(() => import("./ExhibitionPortfolio"));
 
 const easeOut = [0.16, 1, 0.3, 1] as const;
 
@@ -508,13 +510,15 @@ function GalleryModal({
   useEffect(() => {
     if (!project) return;
 
+    const imageCount = project.images.length;
+
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") onClose();
       if (event.key === "ArrowLeft") {
-        onIndexChange((activeIndex - 1 + project.images.length) % project.images.length);
+        onIndexChange((activeIndex - 1 + imageCount) % imageCount);
       }
       if (event.key === "ArrowRight") {
-        onIndexChange((activeIndex + 1) % project.images.length);
+        onIndexChange((activeIndex + 1) % imageCount);
       }
     }
 
@@ -713,6 +717,7 @@ const stormMarqueeImages = [
 ];
 
 function stormMobileSource(src: string) {
+  if (src.startsWith("/work/edition-2026/")) return `/mobile${src}`;
   const parts = src.split("/").filter(Boolean);
   if (parts[0] === "work" && parts.length === 2) return `/mobile/work/${parts[1]}`;
   if (parts[0] === "ip" && parts.length === 2) return `/mobile/ip/${parts[1]}`;
@@ -1121,6 +1126,7 @@ function StormPortfolio({ onOpen }: { onOpen: (project: GalleryProject) => void 
           <a href="#storm-services">能力</a>
           <a href="#storm-projects">项目</a>
           <a href="#storm-contact">联系</a>
+          <a href="?version=exhibition">全新作品展厅 ↗</a>
           <a className="storm-back-link" href="./">返回原版</a>
         </nav>
         <motion.h1
@@ -1280,14 +1286,20 @@ export default function Home() {
   const [activeGallery, setActiveGallery] = useState<GalleryProject | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [isStormVersion, setIsStormVersion] = useState(false);
+  const [isExhibitionVersion, setIsExhibitionVersion] = useState(false);
 
   useEffect(() => {
     setIsStormVersion(new URLSearchParams(window.location.search).get("version") === "storm");
+    setIsExhibitionVersion(new URLSearchParams(window.location.search).get("version") === "exhibition");
   }, []);
 
   function openGallery(project: GalleryProject) {
     setActiveImageIndex(0);
     setActiveGallery(project);
+  }
+
+  if (isExhibitionVersion) {
+    return <><Suspense fallback={<div style={{ minHeight: "100vh", background: "#090b10", color: "#e9e8e2", display: "grid", placeItems: "center" }}>正在展开作品展厅…</div>}><ExhibitionPortfolio onOpen={openGallery} /></Suspense><GalleryModal activeIndex={activeImageIndex} onClose={() => setActiveGallery(null)} onIndexChange={setActiveImageIndex} project={activeGallery} /></>;
   }
 
   if (isStormVersion) {
@@ -1315,6 +1327,7 @@ export default function Home() {
           <div className="hero-atmosphere" aria-hidden="true" />
 
           <nav className="nav-pill" aria-label="主导航">
+            <a href="?version=exhibition">全新作品展厅 ↗</a>
             <a href="#about">个人简介</a>
             <a href="#work">精选作品</a>
             <a href="#process">设计方法</a>

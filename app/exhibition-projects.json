@@ -1,0 +1,394 @@
+[
+  {
+    "id": "cat-ears",
+    "title": "妙脆角猫咪包装",
+    "category": "包装与产品",
+    "type": "包装与产品",
+    "description": "让包装长出猫耳，以产品的三角轮廓建立角色识别。",
+    "cover": "/work/edition-2026/cat-ears-009.webp",
+    "images": [
+      "/work/edition-2026/cat-ears-009.webp",
+      "/work/edition-2026/cat-ears-010.webp",
+      "/work/edition-2026/cat-ears-011.webp",
+      "/work/edition-2026/cat-ears-012.webp",
+      "/work/edition-2026/cat-ears-013.webp",
+      "/work/edition-2026/cat-ears-014.webp",
+      "/work/edition-2026/cat-ears-015.webp",
+      "/work/edition-2026/cat-ears-016.webp",
+      "/work/edition-2026/cat-ears-017.webp",
+      "/work/edition-2026/cat-ears-018.webp",
+      "/work/edition-2026/cat-ears-019.webp",
+      "/work/edition-2026/cat-ears-020.webp",
+      "/work/edition-2026/cat-ears-021.webp"
+    ]
+  },
+  {
+    "id": "lays-changan",
+    "title": "乐事品牌馆 · 大唐不夜城",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "唐风建筑与乐事黄构成街区识别，空间、互动与纪念品连接城市体验。",
+    "cover": "/work/edition-2026/lays-changan-024.webp",
+    "images": [
+      "/work/edition-2026/lays-changan-024.webp",
+      "/work/edition-2026/lays-changan-022.webp",
+      "/work/edition-2026/lays-changan-025.webp",
+      "/work/edition-2026/lays-changan-026.webp",
+      "/work/edition-2026/lays-changan-027.webp",
+      "/work/edition-2026/lays-changan-028.webp",
+      "/work/edition-2026/lays-changan-029.webp",
+      "/work/edition-2026/lays-changan-030.webp",
+      "/work/edition-2026/lays-changan-031.webp",
+      "/work/edition-2026/lays-changan-032.webp",
+      "/work/edition-2026/lays-changan-033.webp",
+      "/work/edition-2026/lays-changan-034.webp",
+      "/work/edition-2026/lays-changan-035.webp",
+      "/work/edition-2026/lays-changan-036.webp",
+      "/work/edition-2026/lays-changan-037.webp",
+      "/work/edition-2026/lays-changan-038.webp",
+      "/work/edition-2026/lays-changan-039.webp",
+      "/work/edition-2026/lays-changan-040.webp",
+      "/work/edition-2026/lays-changan-041.webp"
+    ]
+  },
+  {
+    "id": "pepsi-changan",
+    "title": "百事品牌馆 · 大唐不夜城",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "蓝色光线与通透立面强化夜游辨识，以连续视角呈现建筑与内部体验。",
+    "cover": "/work/edition-2026/pepsi-changan-047.webp",
+    "images": [
+      "/work/edition-2026/pepsi-changan-047.webp",
+      "/work/edition-2026/pepsi-changan-042.webp",
+      "/work/edition-2026/pepsi-changan-044.webp",
+      "/work/edition-2026/pepsi-changan-045.webp",
+      "/work/edition-2026/pepsi-changan-046.webp",
+      "/work/edition-2026/pepsi-changan-048.webp",
+      "/work/edition-2026/pepsi-changan-049.webp",
+      "/work/edition-2026/pepsi-changan-050.webp",
+      "/work/edition-2026/pepsi-changan-051.webp",
+      "/work/edition-2026/pepsi-changan-052.webp",
+      "/work/edition-2026/pepsi-changan-053.webp",
+      "/work/edition-2026/pepsi-changan-054.webp"
+    ]
+  },
+  {
+    "id": "lays-guiyang",
+    "title": "乐事品牌馆 · 黔阳有乐事",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "以店铺建模为主线，把贵阳烟火、地方语言与品牌表达连接。",
+    "cover": "/work/edition-2026/lays-guiyang-059.webp",
+    "images": [
+      "/work/edition-2026/lays-guiyang-059.webp",
+      "/work/edition-2026/lays-guiyang-055.webp",
+      "/work/edition-2026/lays-guiyang-056.webp",
+      "/work/edition-2026/lays-guiyang-057.webp",
+      "/work/edition-2026/lays-guiyang-058.webp",
+      "/work/edition-2026/lays-guiyang-060.webp",
+      "/work/edition-2026/lays-guiyang-061.webp",
+      "/work/edition-2026/lays-guiyang-062.webp",
+      "/work/edition-2026/lays-guiyang-063.webp",
+      "/work/edition-2026/lays-guiyang-064.webp",
+      "/work/edition-2026/lays-guiyang-065.webp",
+      "/work/edition-2026/lays-guiyang-066.webp",
+      "/work/edition-2026/lays-guiyang-067.webp",
+      "/work/edition-2026/lays-guiyang-068.webp",
+      "/work/edition-2026/lays-guiyang-069.webp"
+    ]
+  },
+  {
+    "id": "pepsi-guiyang",
+    "title": "百事品牌馆 · 贵阳青云路",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "金属反射、圆弧吧台与城市入口，共同构成街区里的品牌节点。",
+    "cover": "/work/edition-2026/pepsi-guiyang-070.webp",
+    "images": [
+      "/work/edition-2026/pepsi-guiyang-070.webp",
+      "/work/edition-2026/pepsi-guiyang-071.webp"
+    ]
+  },
+  {
+    "id": "bingfeng",
+    "title": "冰峰 · 长安城市体验",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "以夸张瓶型唤起地方记忆，连接特调产品、空间与文创零售。",
+    "cover": "/work/edition-2026/bingfeng-072.webp",
+    "images": [
+      "/work/edition-2026/bingfeng-072.webp",
+      "/work/edition-2026/bingfeng-073.webp",
+      "/work/edition-2026/bingfeng-074.webp"
+    ]
+  },
+  {
+    "id": "water-festival",
+    "title": "乐事 · 西双版纳泼水节",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "把地域风味与节庆互动连接，让快闪店成为尝鲜与水战的入口。",
+    "cover": "/work/edition-2026/water-festival-076.webp",
+    "images": [
+      "/work/edition-2026/water-festival-076.webp",
+      "/work/edition-2026/water-festival-077.webp",
+      "/work/edition-2026/water-festival-078.webp",
+      "/work/edition-2026/water-festival-079.webp",
+      "/work/edition-2026/water-festival-080.webp",
+      "/work/edition-2026/water-festival-081.webp",
+      "/work/edition-2026/water-festival-082.webp",
+      "/work/edition-2026/water-festival-083.webp",
+      "/work/edition-2026/water-festival-084.webp"
+    ]
+  },
+  {
+    "id": "huaqing-night",
+    "title": "华清御汤 × 乐事",
+    "category": "联名与活动",
+    "type": "联名与活动",
+    "description": "用巡游、唐诗互动与限定礼物，在夜游旅程中组织品牌体验。",
+    "cover": "/work/edition-2026/huaqing-night-085.webp",
+    "images": [
+      "/work/edition-2026/huaqing-night-085.webp",
+      "/work/edition-2026/huaqing-night-086.webp",
+      "/work/edition-2026/huaqing-night-087.webp",
+      "/work/edition-2026/huaqing-night-088.webp"
+    ]
+  },
+  {
+    "id": "union",
+    "title": "陕西联合 · 主场品牌联名",
+    "category": "联名与活动",
+    "type": "联名与活动",
+    "description": "以观赛行为连接乐事、百事与士力架，延展包装与现场补给。",
+    "cover": "/work/edition-2026/union-094.webp",
+    "images": [
+      "/work/edition-2026/union-094.webp",
+      "/work/edition-2026/union-089.webp",
+      "/work/edition-2026/union-090.webp",
+      "/work/edition-2026/union-091.webp",
+      "/work/edition-2026/union-092.webp",
+      "/work/edition-2026/union-093.webp",
+      "/work/edition-2026/union-095.webp",
+      "/work/edition-2026/union-096.webp",
+      "/work/edition-2026/union-097.webp",
+      "/work/edition-2026/union-098.webp"
+    ]
+  },
+  {
+    "id": "kungfu",
+    "title": "乐事 × 真功夫",
+    "category": "联名与活动",
+    "type": "联名与活动",
+    "description": "把酥脆带上餐桌，包装、城市主题店与周边共同表达联名关系。",
+    "cover": "/work/edition-2026/kungfu-099.webp",
+    "images": [
+      "/work/edition-2026/kungfu-099.webp",
+      "/work/edition-2026/kungfu-100.webp",
+      "/work/edition-2026/kungfu-101.webp",
+      "/work/edition-2026/kungfu-102.webp",
+      "/work/edition-2026/kungfu-103.webp",
+      "/work/edition-2026/kungfu-104.webp",
+      "/work/edition-2026/kungfu-105.webp",
+      "/work/edition-2026/kungfu-106.webp",
+      "/work/edition-2026/kungfu-107.webp"
+    ]
+  },
+  {
+    "id": "master-kong",
+    "title": "康师傅 · 长安泡面品牌馆",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "用唐风建筑与巨型泡面造型，呈现文旅场景中的堂食和便携体验。",
+    "cover": "/work/edition-2026/master-kong-108.webp",
+    "images": [
+      "/work/edition-2026/master-kong-108.webp",
+      "/work/edition-2026/master-kong-109.webp",
+      "/work/edition-2026/master-kong-110.webp",
+      "/work/edition-2026/master-kong-111.webp",
+      "/work/edition-2026/master-kong-112.webp",
+      "/work/edition-2026/master-kong-113.webp"
+    ]
+  },
+  {
+    "id": "kaiyuan",
+    "title": "百事 · 开元广场概念",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "生肖、诗词与角色装置连接城市触点，呈现萌趣与未来感的视觉探索。",
+    "cover": "/work/edition-2026/kaiyuan-114.webp",
+    "images": [
+      "/work/edition-2026/kaiyuan-114.webp",
+      "/work/edition-2026/kaiyuan-115.webp",
+      "/work/edition-2026/kaiyuan-116.webp",
+      "/work/edition-2026/kaiyuan-117.webp",
+      "/work/edition-2026/kaiyuan-118.webp",
+      "/work/edition-2026/kaiyuan-119.webp",
+      "/work/edition-2026/kaiyuan-120.webp",
+      "/work/edition-2026/kaiyuan-121.webp",
+      "/work/edition-2026/kaiyuan-122.webp"
+    ]
+  },
+  {
+    "id": "lays-campaign",
+    "title": "乐事品牌馆 · 商业海报",
+    "category": "商业视觉",
+    "type": "商业视觉",
+    "description": "地域、节庆、促销与文创以不同视觉语气呈现，共享品牌识别。",
+    "cover": "/work/edition-2026/lays-campaign-123.webp",
+    "images": [
+      "/work/edition-2026/lays-campaign-123.webp",
+      "/work/edition-2026/lays-campaign-124.webp",
+      "/work/edition-2026/lays-campaign-125.webp",
+      "/work/edition-2026/lays-campaign-126.webp",
+      "/work/edition-2026/lays-campaign-127.webp",
+      "/work/edition-2026/lays-campaign-128.webp"
+    ]
+  },
+  {
+    "id": "pepsi-campaign",
+    "title": "百事品牌馆 · 商业海报",
+    "category": "商业视觉",
+    "type": "商业视觉",
+    "description": "以品牌蓝连接季节、旅游、特调与赛事，探索同一品牌的多种风格。",
+    "cover": "/work/edition-2026/pepsi-campaign-129.webp",
+    "images": [
+      "/work/edition-2026/pepsi-campaign-129.webp",
+      "/work/edition-2026/pepsi-campaign-130.webp",
+      "/work/edition-2026/pepsi-campaign-131.webp",
+      "/work/edition-2026/pepsi-campaign-132.webp",
+      "/work/edition-2026/pepsi-campaign-133.webp",
+      "/work/edition-2026/pepsi-campaign-134.webp"
+    ]
+  },
+  {
+    "id": "mini-show",
+    "title": "百事迷你秀 · 零售现场",
+    "category": "联名与活动",
+    "type": "联名与活动",
+    "description": "把主视觉转换成立体触点，用位置与尺寸规划组织有限场地。",
+    "cover": "/work/edition-2026/mini-show-135.webp",
+    "images": [
+      "/work/edition-2026/mini-show-135.webp",
+      "/work/edition-2026/mini-show-136.webp",
+      "/work/edition-2026/mini-show-137.webp",
+      "/work/edition-2026/mini-show-138.webp",
+      "/work/edition-2026/mini-show-139.webp"
+    ]
+  },
+  {
+    "id": "structure",
+    "title": "包装结构与材质表现",
+    "category": "包装与产品",
+    "type": "包装与产品",
+    "description": "从盒型、信息层级到材质与灯光，呈现产品设计与三维表现。",
+    "cover": "/work/edition-2026/structure-144.webp",
+    "images": [
+      "/work/edition-2026/structure-144.webp",
+      "/work/edition-2026/structure-140.webp",
+      "/work/edition-2026/structure-141.webp",
+      "/work/edition-2026/structure-142.webp",
+      "/work/edition-2026/structure-143.webp",
+      "/work/edition-2026/structure-145.webp",
+      "/work/edition-2026/structure-150.webp"
+    ]
+  },
+  {
+    "id": "commercial-selection",
+    "title": "商业视觉 · 作品选集",
+    "category": "商业视觉",
+    "type": "商业视觉",
+    "description": "平面海报、产品陈列与赛事视觉的综合展示。",
+    "cover": "/work/edition-2026/commercial-selection-148.webp",
+    "images": [
+      "/work/edition-2026/commercial-selection-148.webp",
+      "/work/edition-2026/commercial-selection-146.webp",
+      "/work/edition-2026/commercial-selection-147.webp",
+      "/work/edition-2026/commercial-selection-149.webp"
+    ]
+  },
+  {
+    "id": "vending",
+    "title": "百事 × 不夜城自贩机",
+    "category": "品牌空间",
+    "type": "品牌空间",
+    "description": "把标准售卖设备纳入唐风街区，让补给点成为城市风景。",
+    "cover": "/work/edition-2026/vending-151.webp",
+    "images": [
+      "/work/edition-2026/vending-151.webp",
+      "/work/edition-2026/vending-152.webp"
+    ]
+  },
+  {
+    "id": "dining",
+    "title": "百事 · 餐饮联动",
+    "category": "商业视觉",
+    "type": "商业视觉",
+    "description": "冷感液体与热感食物形成画面张力，表达饮品与餐饮联动。",
+    "cover": "/work/edition-2026/dining-153.webp",
+    "images": [
+      "/work/edition-2026/dining-153.webp"
+    ]
+  },
+  {
+    "id": "second-life",
+    "title": "包装设计 · 礼物的第二生命",
+    "category": "包装与产品",
+    "type": "包装与产品",
+    "description": "猫窝、文化包装与城市礼盒，用结构与使用动作延长设计的接触。",
+    "cover": "/work/edition-2026/second-life-154.webp",
+    "images": [
+      "/work/edition-2026/second-life-154.webp",
+      "/work/edition-2026/second-life-155.webp",
+      "/work/edition-2026/second-life-156.webp",
+      "/work/edition-2026/second-life-157.webp",
+      "/work/edition-2026/second-life-158.webp"
+    ]
+  },
+  {
+    "id": "blind-box",
+    "title": "百事与乐事 · 情绪盲盒",
+    "category": "IP 与文创",
+    "type": "IP 与文创",
+    "description": "统一毛绒轮廓，以情绪、品牌色和隐藏款构成收藏系列。",
+    "cover": "/work/edition-2026/blind-box-160.webp",
+    "images": [
+      "/work/edition-2026/blind-box-160.webp",
+      "/work/edition-2026/blind-box-159.webp",
+      "/work/edition-2026/blind-box-161.webp",
+      "/work/edition-2026/blind-box-162.webp",
+      "/work/edition-2026/blind-box-163.webp",
+      "/work/edition-2026/blind-box-164.webp",
+      "/work/edition-2026/blind-box-165.webp"
+    ]
+  },
+  {
+    "id": "zodiac",
+    "title": "十二生肖 · 收藏小卡",
+    "category": "IP 与文创",
+    "type": "IP 与文创",
+    "description": "以统一版式容纳不同性格，把祝福与城市记忆变成可收藏物。",
+    "cover": "/work/edition-2026/zodiac-166.webp",
+    "images": [
+      "/work/edition-2026/zodiac-166.webp",
+      "/work/edition-2026/zodiac-167.webp"
+    ]
+  },
+  {
+    "id": "souvenirs",
+    "title": "长安文创 · 把城市带回日常",
+    "category": "IP 与文创",
+    "type": "IP 与文创",
+    "description": "扇子、氛围灯与香片回应不同生活动作，以实用物件延续旅程。",
+    "cover": "/work/edition-2026/souvenirs-168.webp",
+    "images": [
+      "/work/edition-2026/souvenirs-168.webp",
+      "/work/edition-2026/souvenirs-169.webp",
+      "/work/edition-2026/souvenirs-170.webp",
+      "/work/edition-2026/souvenirs-171.webp",
+      "/work/edition-2026/souvenirs-172.webp",
+      "/work/edition-2026/souvenirs-173.webp"
+    ]
+  }
+]
